@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+*.env
+
+# Build outputs
+.next/
+dist/
+build/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+

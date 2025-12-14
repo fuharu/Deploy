@@ -47,7 +47,7 @@ export default function EsList({
              placeholder="文字数" 
              className="border dark:border-gray-600 rounded px-2 py-2 text-sm w-20 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" 
           />
-          <button type="submit" className="bg-gray-900 hover:bg-gray-800 dark:bg-gray-100 dark:hover:bg-gray-200 dark:text-black text-white px-4 py-2 rounded text-sm font-medium whitespace-nowrap transition">
+          <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm font-medium whitespace-nowrap transition">
              追加
           </button>
       </form>
@@ -112,7 +112,7 @@ function EsItem({ es, companyId }: { es: ES, companyId: string }) {
                         <option value="Completed">完了</option>
                     </select>
                     <button type="button" onClick={() => setIsEditing(false)} className="text-gray-500">キャンセル</button>
-                    <button type="submit" className="bg-gray-900 text-white px-3 py-1 rounded">保存</button>
+                    <button type="submit" className="bg-indigo-600 text-white px-3 py-1 rounded">保存</button>
                 </div>
             </div>
         </form>
@@ -124,7 +124,7 @@ function EsItem({ es, companyId }: { es: ES, companyId: string }) {
         <div className="flex justify-between items-start mb-2">
             <h3 className="font-medium dark:text-gray-200">{es.question}</h3>
             <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                <button onClick={() => setIsEditing(true)} className="text-xs text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600 p-1 rounded transition">
+                <button onClick={() => setIsEditing(true)} className="text-xs text-indigo-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 p-1 rounded transition">
                     <Edit className="w-4 h-4" />
                 </button>
                 <form action={deleteESEntry}>

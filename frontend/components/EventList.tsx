@@ -70,7 +70,7 @@ export default function EventList({
              </div>
           </div>
 
-          <button type="submit" className="bg-gray-900 hover:bg-gray-800 dark:bg-gray-100 dark:hover:bg-gray-200 dark:text-black text-white px-4 py-2 rounded text-sm font-medium w-full transition mt-1">
+          <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm font-medium w-full transition mt-1">
              追加
           </button>
       </form>
@@ -103,15 +103,15 @@ function EventItem({ event, companyId }: { event: Event, companyId: string }) {
   const format = (d: Date) => `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
 
   return (
-    <div className="border-l-4 border-gray-800 dark:border-gray-200 bg-white dark:bg-gray-800 p-3 rounded shadow-sm hover:shadow transition group">
+    <div className="border-l-4 border-indigo-500 dark:border-indigo-400 bg-white dark:bg-gray-800 p-3 rounded shadow-sm hover:shadow transition group">
         <div className="flex justify-between items-start">
             <div>
                 <div className="font-bold text-sm mb-1 dark:text-white">{event.title} <span className="text-xs font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-1 rounded ml-1">{event.type}</span></div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
                     <Clock className="w-3 h-3" /> {format(startDate)} ~ {format(endDate)}
                 </div>
                 {event.location && (
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate max-w-[200px] flex items-center gap-1">
+                    <div className="text-xs text-indigo-500 dark:text-indigo-400 mt-1 truncate max-w-[200px] flex items-center gap-1">
                         <MapPin className="w-3 h-3" /> {event.location}
                     </div>
                 )}

@@ -8,6 +8,23 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-rounded: var(--font-m-plus-rounded), var(--font-geist-sans), sans-serif;
+  
+  --animate-blob: blob 7s infinite;
+  
+  @keyframes blob {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
 }
 
 :root {
@@ -49,4 +66,15 @@ body {
 }
 .dark .bg-dot-pattern {
   background-image: radial-gradient(#818cf8 1.5px, transparent 1.5px);
+}
+
+/* Animation Utilities (v4 way) */
+.animate-blob {
+  animation: blob 7s infinite;
+}
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+.animation-delay-4000 {
+  animation-delay: 4s;
 }

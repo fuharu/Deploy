@@ -16,7 +16,10 @@ import {
   Briefcase,
   Trophy,
   History,
-  PenTool
+  PenTool,
+  Sun,
+  Moon,
+  Sunrise
 } from "lucide-react";
 
 import WeeklyCalendar from "@/components/WeeklyCalendar";
@@ -92,6 +95,19 @@ export default async function Home() {
     return eventDate <= tomorrow;
   }) || [];
 
+  // 時間帯による挨拶とアイコン
+  const hour = now.getHours();
+  let greeting = "こんにちは";
+  let GreetingIcon = Sun;
+  
+  if (hour >= 5 && hour < 11) {
+    greeting = "おはようございます";
+    GreetingIcon = Sunrise;
+  } else if (hour >= 18 || hour < 5) {
+    greeting = "こんばんは";
+    GreetingIcon = Moon;
+  }
+
   // 円グラフ用のデータ計算
   let currentAngle = 0;
   const pieData = Object.entries(statusCounts)
@@ -125,26 +141,32 @@ export default async function Home() {
     <div className="container mx-auto p-4 md:p-8 max-w-7xl space-y-6">
       
       {/* ヒーローエリア */}
-      <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-md shadow-indigo-100 dark:shadow-none border border-indigo-50 dark:border-white/10 relative overflow-hidden bg-dot-pattern">
-        {/* 装飾背景 (薄く) */}
-        <div className="absolute inset-0 bg-white/90 dark:bg-slate-900/95 pointer-events-none"></div>
+      <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-md shadow-indigo-100 dark:shadow-none border border-indigo-50 dark:border-white/10 relative overflow-hidden group">
+        {/* 背景パターン */}
+        <div className="absolute inset-0 bg-dot-pattern opacity-50 pointer-events-none"></div>
+        
+        {/* 動くBlob背景 (Organic Atmosphere) */}
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-200 dark:bg-indigo-900/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
+        <div className="absolute top-0 right-20 -mt-20 w-72 h-72 bg-purple-200 dark:bg-purple-900/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-pink-200 dark:bg-pink-900/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
 
+        {/* コンテンツレイヤー */}
         <div className="relative z-10 flex flex-col md:flex-row gap-6 items-center justify-between">
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-xl md:text-3xl font-bold mb-3 text-indigo-950 dark:text-white flex items-center justify-center md:justify-start gap-3">
-              <span className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
-                <Smile className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+              <span className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full border border-indigo-200 dark:border-indigo-700/50">
+                <GreetingIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
               </span>
-              こんにちは、就活生さん！
+              {greeting}、就活生さん！
             </h1>
-            <p className="text-gray-600 dark:text-slate-300 text-base mb-4 leading-relaxed">
+            <p className="text-gray-600 dark:text-slate-300 text-base mb-4 leading-relaxed max-w-xl">
               {urgentEvents.length > 0 
                 ? `明日にかけて${urgentEvents.length}件の予定があります。準備は万端ですか？` 
                 : "直近の緊急タスクはありません。自分のペースで進めましょう。"}
             </p>
             
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-              <div className="bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 flex items-center gap-3">
+              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 flex items-center gap-3">
                 <div className="bg-indigo-100 dark:bg-indigo-900/50 p-1.5 rounded-lg">
                     <Briefcase className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                 </div>
@@ -154,7 +176,7 @@ export default async function Home() {
                     <span className="text-xs text-gray-500 ml-1">社</span>
                 </div>
               </div>
-              <div className="bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 flex items-center gap-3">
+              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 flex items-center gap-3">
                 <div className="bg-amber-100 dark:bg-amber-900/50 p-1.5 rounded-lg">
                     <Trophy className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                 </div>
@@ -168,9 +190,9 @@ export default async function Home() {
           </div>
 
           {/* 進捗グラフ (ドーナツチャート) - 太く、コンパクトに */}
-          <div className="flex-shrink-0 w-48 h-48 relative flex items-center justify-center bg-white/50 dark:bg-slate-800/30 rounded-full backdrop-blur-sm shadow-inner border border-white/50 dark:border-white/10">
+          <div className="flex-shrink-0 w-48 h-48 relative flex items-center justify-center bg-white/60 dark:bg-slate-800/40 rounded-full backdrop-blur-sm shadow-inner border border-white/50 dark:border-white/10">
              <svg viewBox="0 0 100 100" className="w-full h-full rotate-[-90deg]">
-               {/* ベースリング (データがない部分や背景として表示) */}
+               {/* ベースリング */}
                <circle cx="50" cy="50" r="50" className="text-gray-100 dark:text-slate-800" fill="currentColor" />
                
                {totalCompanies > 0 ? (
@@ -183,7 +205,6 @@ export default async function Home() {
                     />
                   ))
                ) : (
-                  // データなしの場合はグレーのリングを表示（ベースリングで代用可だが明示的に）
                   <path d={getPiePath(0, 360)} fill="#e2e8f0" className="text-gray-200 dark:text-slate-700" />
                )}
                {/* 中央の穴 */}
@@ -229,7 +250,7 @@ export default async function Home() {
                  <Rocket className="w-6 h-6 text-indigo-600 dark:text-indigo-400" /> クイックアクセス
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <Link href="/companies/new" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-indigo-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-indigo-200 dark:border-white/10 hover:border-indigo-400 dark:hover:border-indigo-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                  <Link href="/companies/new" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-indigo-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-indigo-200 dark:border-white/20 hover:border-indigo-400 dark:hover:border-indigo-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
                       <div className="bg-indigo-100 dark:bg-indigo-900/40 p-3 rounded-2xl group-hover:bg-indigo-200 dark:group-hover:bg-indigo-900/60 transition-colors">
                         <Building2 className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
@@ -237,7 +258,7 @@ export default async function Home() {
                       <span className="font-bold text-sm text-gray-700 dark:text-slate-200 group-hover:text-indigo-700 dark:group-hover:text-white transition-colors">企業追加</span>
                   </Link>
                   
-                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-blue-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-blue-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-blue-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-blue-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-blue-200 dark:border-white/20 hover:border-blue-400 dark:hover:border-blue-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-full h-1 bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
                       <div className="bg-blue-100 dark:bg-blue-900/40 p-3 rounded-2xl group-hover:bg-blue-200 dark:group-hover:bg-blue-900/60 transition-colors">
                          <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -245,7 +266,7 @@ export default async function Home() {
                       <span className="font-bold text-sm text-gray-700 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-white transition-colors">ES管理</span>
                   </Link>
 
-                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-amber-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-amber-200 dark:border-white/10 hover:border-amber-400 dark:hover:border-amber-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-amber-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-amber-200 dark:border-white/20 hover:border-amber-400 dark:hover:border-amber-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-full h-1 bg-amber-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
                       <div className="bg-amber-100 dark:bg-amber-900/40 p-3 rounded-2xl group-hover:bg-amber-200 dark:group-hover:bg-amber-900/60 transition-colors">
                          <Calendar className="w-6 h-6 text-amber-600 dark:text-amber-400" />
@@ -253,7 +274,7 @@ export default async function Home() {
                       <span className="font-bold text-sm text-gray-700 dark:text-slate-200 group-hover:text-amber-700 dark:group-hover:text-white transition-colors">カレンダー</span>
                   </Link>
 
-                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-rose-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-rose-200 dark:border-white/10 hover:border-rose-400 dark:hover:border-rose-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-rose-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-rose-200 dark:border-white/20 hover:border-rose-400 dark:hover:border-rose-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
                        <div className="absolute top-0 left-0 w-full h-1 bg-rose-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
                       <div className="bg-rose-100 dark:bg-rose-900/40 p-3 rounded-2xl group-hover:bg-rose-200 dark:group-hover:bg-rose-900/60 transition-colors">
                          <BarChart2 className="w-6 h-6 text-rose-600 dark:text-rose-400" />

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef } from 'react'
 import { addTask, toggleTask, deleteTask } from '@/app/companies/[id]/todo_actions'
 
 type Task = {
@@ -17,48 +17,52 @@ export default function TodoList({
   companyId: string, 
   initialTasks: Task[] 
 }) {
-  const [isAdding, setIsAdding] = useState(false)
+  const formRef = useRef<HTMLFormElement>(null)
   
   return (
-    <div className="flex flex-col gap-3">
-      {initialTasks.map((task) => (
-        <TaskItem key={task.id} task={task} companyId={companyId} />
-      ))}
-
-      {initialTasks.length === 0 && !isAdding && (
-          <div className="text-center py-6 bg-gray-50 rounded border border-dashed border-gray-200 mt-2">
-              <div className="text-2xl mb-2">✅</div>
-              <p className="text-sm text-gray-500 mb-2">タスクはありません</p>
-              <button 
-                  onClick={() => setIsAdding(true)} 
-                  className="text-blue-600 text-sm font-bold hover:underline"
-              >
-                  やるべきことを追加する
-              </button>
-          </div>
-      )}
-
-      {isAdding ? (
-        <form action={async (formData) => {
+    <div className="flex flex-col gap-4">
+      {/* 常時表示の追加フォーム */}
+      <form 
+        ref={formRef}
+        action={async (formData) => {
             await addTask(formData)
-            setIsAdding(false)
-        }} className="border p-3 rounded bg-gray-50 flex flex-col gap-2 mt-2">
-            <input type="hidden" name="company_id" value={companyId} />
-            <input name="title" placeholder="タスク内容" required className="border p-2 rounded w-full text-sm" />
-            <input name="due_date" type="date" className="border p-2 rounded w-full text-sm" />
-            <div className="flex gap-2 justify-end">
-                <button type="button" onClick={() => setIsAdding(false)} className="text-xs text-gray-500">キャンセル</button>
-                <button type="submit" className="bg-blue-600 text-white px-3 py-1 rounded text-xs">追加</button>
+            formRef.current?.reset()
+        }} 
+        className="flex gap-2"
+      >
+          <input type="hidden" name="company_id" value={companyId} />
+          <div className="flex-1 relative">
+            <input 
+                name="title" 
+                placeholder="新しいタスクを追加..." 
+                required 
+                className="border dark:border-gray-600 rounded px-3 py-2 w-full text-sm dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" 
+            />
+          </div>
+          <input 
+             name="due_date" 
+             type="date" 
+             className="border dark:border-gray-600 rounded px-2 py-2 text-sm w-32 dark:bg-gray-700 dark:text-white" 
+          />
+          <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium whitespace-nowrap transition">
+             追加
+          </button>
+      </form>
+
+      <div className="flex flex-col gap-2">
+        {initialTasks.map((task) => (
+            <TaskItem key={task.id} task={task} companyId={companyId} />
+        ))}
+
+        {initialTasks.length === 0 && (
+            <div className="text-center py-8 bg-gray-50 dark:bg-gray-900/50 rounded border border-dashed border-gray-200 dark:border-gray-700">
+                <div className="text-2xl mb-2 opacity-50">✅</div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                    タスクはまだありません。<br/>上のフォームから追加できます。
+                </p>
             </div>
-        </form>
-      ) : (
-        <button 
-            onClick={() => setIsAdding(true)} 
-            className="text-blue-500 text-sm hover:underline text-left mt-2"
-        >
-            + タスクを追加
-        </button>
-      )}
+        )}
+      </div>
     </div>
   )
 }

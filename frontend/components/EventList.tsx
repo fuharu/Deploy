@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { addEvent, deleteEvent } from '@/app/companies/[id]/event_actions'
 
 type Event = {
@@ -19,70 +19,69 @@ export default function EventList({
   companyId: string, 
   initialEvents: Event[] 
 }) {
-  const [isAdding, setIsAdding] = useState(false)
+  const formRef = useRef<HTMLFormElement>(null)
   
   return (
     <div className="flex flex-col gap-4">
-      {initialEvents.map((event) => (
-        <EventItem key={event.id} event={event} companyId={companyId} />
-      ))}
-
-      {initialEvents.length === 0 && !isAdding && (
-          <div className="text-center py-6 bg-gray-50 rounded border border-dashed border-gray-200 mb-4">
-              <div className="text-2xl mb-2">📅</div>
-              <p className="text-sm text-gray-500 mb-2">まだイベントがありません</p>
-              <button 
-                  onClick={() => setIsAdding(true)} 
-                  className="text-blue-600 text-sm font-bold hover:underline"
-              >
-                  最初の予定を登録しましょう！
-              </button>
-          </div>
-      )}
-
-      {isAdding ? (
-        <form action={async (formData) => {
+      {/* 常時表示の簡易追加フォーム */}
+      <form 
+        ref={formRef}
+        action={async (formData) => {
             await addEvent(formData)
-            setIsAdding(false)
-        }} className="border p-4 rounded bg-gray-50 flex flex-col gap-3">
-            <input type="hidden" name="company_id" value={companyId} />
-            
-            <div className="grid grid-cols-2 gap-2">
-                <input name="title" placeholder="イベント名 (一次面接など)" required className="border p-2 rounded w-full text-sm" />
-                <select name="type" className="border p-2 rounded w-full text-sm">
-                    <option value="Interview">面接</option>
-                    <option value="Deadline">締切</option>
-                    <option value="Seminar">説明会</option>
-                    <option value="Other">その他</option>
-                </select>
-            </div>
+            formRef.current?.reset()
+        }} 
+        className="flex flex-col gap-2 bg-gray-50 dark:bg-gray-700/30 p-3 rounded-lg border dark:border-gray-700"
+      >
+          <input type="hidden" name="company_id" value={companyId} />
+          
+          <div className="flex gap-2">
+            <input 
+                name="title" 
+                placeholder="新しいイベントを追加 (例: 一次面接)..." 
+                required 
+                className="border dark:border-gray-600 rounded px-3 py-2 flex-1 text-sm dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" 
+            />
+             <select name="type" className="border dark:border-gray-600 rounded px-2 py-2 text-sm w-28 dark:bg-gray-700 dark:text-white">
+                <option value="Interview">面接</option>
+                <option value="Deadline">締切</option>
+                <option value="Seminar">説明会</option>
+                <option value="Other">その他</option>
+            </select>
+          </div>
+          
+          <div className="flex gap-2 items-center">
+             <input 
+                name="start_time" 
+                type="datetime-local" 
+                required 
+                className="border dark:border-gray-600 rounded px-2 py-2 text-sm flex-1 dark:bg-gray-700 dark:text-white" 
+             />
+             <span className="text-gray-400">~</span>
+             <input 
+                name="end_time" 
+                type="datetime-local" 
+                className="border dark:border-gray-600 rounded px-2 py-2 text-sm flex-1 dark:bg-gray-700 dark:text-white" 
+             />
+             <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium whitespace-nowrap transition">
+                 追加
+             </button>
+          </div>
+      </form>
 
-            <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-col">
-                    <label className="text-xs text-gray-500">開始日時</label>
-                    <input name="start_time" type="datetime-local" required className="border p-2 rounded w-full text-sm" />
-                </div>
-                <div className="flex flex-col">
-                    <label className="text-xs text-gray-500">終了日時</label>
-                    <input name="end_time" type="datetime-local" className="border p-2 rounded w-full text-sm" />
-                </div>
-            </div>
+      <div className="flex flex-col gap-3">
+        {initialEvents.map((event) => (
+            <EventItem key={event.id} event={event} companyId={companyId} />
+        ))}
 
-            <input name="location" placeholder="場所 (URLまたは住所)" className="border p-2 rounded w-full text-sm" />
-
-            <div className="flex gap-2 justify-end">
-                <button type="button" onClick={() => setIsAdding(false)} className="text-sm text-gray-500">キャンセル</button>
-                <button type="submit" className="bg-blue-600 text-white px-3 py-1 rounded text-sm">追加</button>
+        {initialEvents.length === 0 && (
+            <div className="text-center py-8 bg-gray-50 dark:bg-gray-900/50 rounded border border-dashed border-gray-200 dark:border-gray-700">
+                <div className="text-2xl mb-2 opacity-50">📅</div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                    イベントはまだありません。<br/>上のフォームから予定を追加しましょう。
+                </p>
             </div>
-        </form>
-      ) : (
-        <button 
-            onClick={() => setIsAdding(true)} 
-            className="text-blue-500 text-sm hover:underline text-left"
-        >
-            + イベントを追加
-        </button>
-      )}
+        )}
+      </div>
     </div>
   )
 }

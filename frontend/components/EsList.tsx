@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { addESEntry, updateESEntry, deleteESEntry } from '@/app/companies/[id]/es_actions'
 
 type ES = {
@@ -18,48 +18,53 @@ export default function EsList({
   companyId: string, 
   initialEsList: ES[] 
 }) {
-  const [isAdding, setIsAdding] = useState(false)
+  const formRef = useRef<HTMLFormElement>(null)
   
   return (
     <div className="flex flex-col gap-4">
-      {initialEsList.map((es) => (
-        <EsItem key={es.id} es={es} companyId={companyId} />
-      ))}
-
-      {initialEsList.length === 0 && !isAdding && (
-          <div className="text-center py-6 bg-gray-50 rounded border border-dashed border-gray-200">
-              <div className="text-2xl mb-2">📝</div>
-              <p className="text-sm text-gray-500 mb-2">ESはまだ登録されていません</p>
-              <button 
-                  onClick={() => setIsAdding(true)} 
-                  className="text-blue-600 text-sm font-bold hover:underline"
-              >
-                  設問を追加して書き始める
-              </button>
-          </div>
-      )}
-
-      {isAdding ? (
-        <form action={async (formData) => {
+      {/* 常時表示の追加フォーム */}
+      <form 
+        ref={formRef}
+        action={async (formData) => {
             await addESEntry(formData)
-            setIsAdding(false)
-        }} className="border p-4 rounded bg-gray-50 flex flex-col gap-2">
-            <input type="hidden" name="company_id" value={companyId} />
-            <input name="question" placeholder="設問内容" required className="border p-2 rounded w-full" />
-            <input name="max_chars" type="number" placeholder="文字数制限 (任意)" className="border p-2 rounded w-full" />
-            <div className="flex gap-2 justify-end">
-                <button type="button" onClick={() => setIsAdding(false)} className="text-sm text-gray-500">キャンセル</button>
-                <button type="submit" className="bg-blue-600 text-white px-3 py-1 rounded text-sm">追加</button>
+            formRef.current?.reset()
+        }} 
+        className="flex gap-2"
+      >
+          <input type="hidden" name="company_id" value={companyId} />
+          <div className="flex-1">
+            <input 
+                name="question" 
+                placeholder="新しい設問を追加 (例: 志望動機)..." 
+                required 
+                className="border dark:border-gray-600 rounded px-3 py-2 w-full text-sm dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" 
+            />
+          </div>
+          <input 
+             name="max_chars" 
+             type="number" 
+             placeholder="文字数" 
+             className="border dark:border-gray-600 rounded px-2 py-2 text-sm w-20 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" 
+          />
+          <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium whitespace-nowrap transition">
+             追加
+          </button>
+      </form>
+
+      <div className="flex flex-col gap-3">
+        {initialEsList.map((es) => (
+            <EsItem key={es.id} es={es} companyId={companyId} />
+        ))}
+
+        {initialEsList.length === 0 && (
+            <div className="text-center py-8 bg-gray-50 dark:bg-gray-900/50 rounded border border-dashed border-gray-200 dark:border-gray-700">
+                <div className="text-2xl mb-2 opacity-50">📝</div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                    ESはまだありません。<br/>上のフォームから設問を追加してください。
+                </p>
             </div>
-        </form>
-      ) : (
-        <button 
-            onClick={() => setIsAdding(true)} 
-            className="text-blue-500 text-sm hover:underline text-left"
-        >
-            + 設問を追加
-        </button>
-      )}
+        )}
+      </div>
     </div>
   )
 }

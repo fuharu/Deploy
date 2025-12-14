@@ -28,10 +28,10 @@ export default function TodoList({
             await addTask(formData)
             formRef.current?.reset()
         }} 
-        className="flex gap-2"
+        className="flex flex-wrap gap-2"
       >
           <input type="hidden" name="company_id" value={companyId} />
-          <div className="flex-1 relative">
+          <div className="flex-1 relative min-w-[200px]">
             <input 
                 name="title" 
                 placeholder="新しいタスクを追加..." 

@@ -30,18 +30,18 @@ export default function EventList({
             await addEvent(formData)
             formRef.current?.reset()
         }} 
-        className="flex flex-col gap-2 bg-gray-50 dark:bg-gray-700/30 p-3 rounded-lg border dark:border-gray-700"
+        className="flex flex-col gap-3 bg-gray-50 dark:bg-gray-700/30 p-3 rounded-lg border dark:border-gray-700"
       >
           <input type="hidden" name="company_id" value={companyId} />
           
           <div className="flex gap-2">
             <input 
                 name="title" 
-                placeholder="新しいイベントを追加 (例: 一次面接)..." 
+                placeholder="新しいイベントを追加..." 
                 required 
-                className="border dark:border-gray-600 rounded px-3 py-2 flex-1 text-sm dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" 
+                className="border dark:border-gray-600 rounded px-3 py-2 flex-1 text-sm dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 min-w-0" 
             />
-             <select name="type" className="border dark:border-gray-600 rounded px-2 py-2 text-sm w-28 dark:bg-gray-700 dark:text-white">
+             <select name="type" className="border dark:border-gray-600 rounded px-2 py-2 text-sm w-24 md:w-28 dark:bg-gray-700 dark:text-white shrink-0">
                 <option value="Interview">面接</option>
                 <option value="Deadline">締切</option>
                 <option value="Seminar">説明会</option>
@@ -49,23 +49,29 @@ export default function EventList({
             </select>
           </div>
           
-          <div className="flex gap-2 items-center">
-             <input 
-                name="start_time" 
-                type="datetime-local" 
-                required 
-                className="border dark:border-gray-600 rounded px-2 py-2 text-sm flex-1 dark:bg-gray-700 dark:text-white" 
-             />
-             <span className="text-gray-400">~</span>
-             <input 
-                name="end_time" 
-                type="datetime-local" 
-                className="border dark:border-gray-600 rounded px-2 py-2 text-sm flex-1 dark:bg-gray-700 dark:text-white" 
-             />
-             <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium whitespace-nowrap transition">
-                 追加
-             </button>
+          <div className="flex flex-col gap-2">
+             <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500 dark:text-gray-400 w-8 shrink-0">開始</span>
+                <input 
+                    name="start_time" 
+                    type="datetime-local" 
+                    required 
+                    className="border dark:border-gray-600 rounded px-2 py-2 text-sm flex-1 dark:bg-gray-700 dark:text-white min-w-0" 
+                />
+             </div>
+             <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500 dark:text-gray-400 w-8 shrink-0">終了</span>
+                <input 
+                    name="end_time" 
+                    type="datetime-local" 
+                    className="border dark:border-gray-600 rounded px-2 py-2 text-sm flex-1 dark:bg-gray-700 dark:text-white min-w-0" 
+                />
+             </div>
           </div>
+
+          <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium w-full transition mt-1">
+             追加
+          </button>
       </form>
 
       <div className="flex flex-col gap-3">

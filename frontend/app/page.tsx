@@ -142,8 +142,6 @@ export default async function Home() {
       
       {/* ヒーローエリア */}
       <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-md shadow-indigo-100 dark:shadow-none border border-indigo-50 dark:border-white/10 relative overflow-hidden group">
-        {/* 背景パターン */}
-        <div className="absolute inset-0 bg-dot-pattern opacity-50 pointer-events-none"></div>
         
         {/* 動くBlob背景 (Organic Atmosphere) */}
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-200 dark:bg-indigo-900/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>

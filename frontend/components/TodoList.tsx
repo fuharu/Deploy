@@ -66,7 +66,7 @@ export default function TodoList({
 function TaskItem({ task, companyId }: { task: Task, companyId: string }) {
   // Optimistic UI could be used here, but keeping it simple for now
   return (
-    <div className={`flex items-center gap-3 p-2 rounded hover:bg-gray-50 group ${task.is_completed ? 'opacity-50' : ''}`}>
+    <div className={`flex items-center gap-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition group ${task.is_completed ? 'opacity-50' : ''}`}>
       <input 
         type="checkbox" 
         checked={task.is_completed}
@@ -76,11 +76,11 @@ function TaskItem({ task, companyId }: { task: Task, companyId: string }) {
         className="w-4 h-4 cursor-pointer"
       />
       <div className="flex-1 min-w-0">
-         <div className={`text-sm ${task.is_completed ? 'line-through text-gray-500' : ''}`}>
+         <div className={`text-sm dark:text-gray-200 ${task.is_completed ? 'line-through text-gray-500 dark:text-gray-500' : ''}`}>
             {task.title}
          </div>
          {task.due_date && (
-            <div className="text-xs text-gray-400">
+            <div className="text-xs text-gray-400 dark:text-gray-500">
                 期限: {new Date(task.due_date).toLocaleDateString()}
             </div>
          )}

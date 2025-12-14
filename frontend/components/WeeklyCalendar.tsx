@@ -33,8 +33,8 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
   })
 
   return (
-    <div className="bg-white rounded-xl border shadow-sm p-6">
-      <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+    <div className="bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 shadow-sm p-6 transition-colors">
+      <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">
         📅 今週のスケジュール
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
@@ -45,17 +45,17 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
           const weekDayNames = ['日', '月', '火', '水', '木', '金', '土']
 
           return (
-            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] border rounded p-2 ${isToday ? 'bg-blue-50 border-blue-300' : 'bg-gray-50'}`}>
-              <div className={`text-left md:text-center mb-2 text-sm font-bold flex justify-between md:block ${i === 0 ? 'text-red-500' : i === 6 ? 'text-blue-500' : 'text-gray-700'}`}>
+            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] border rounded p-2 transition-colors ${isToday ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700' : 'bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800'}`}>
+              <div className={`text-left md:text-center mb-2 text-sm font-bold flex justify-between md:block ${i === 0 ? 'text-red-500' : i === 6 ? 'text-blue-500' : 'text-gray-700 dark:text-gray-300'}`}>
                 <span>{date.getDate()} ({weekDayNames[i]})</span>
                 {/* スマホ表示時のみ「今日」ラベルを出すなどの工夫も可 */}
               </div>
               <div className="flex flex-col gap-2 flex-1">
                 {dayEvents.map(event => (
                   <Link href={`/companies/${(event as any).company_id || '#'}`} key={event.id} className="block">
-                     <div className="bg-white p-1.5 rounded border text-xs shadow-sm hover:shadow hover:bg-gray-100 transition">
-                        <div className="font-bold truncate">{event.title}</div>
-                        <div className="text-gray-500 truncate text-[10px]">
+                     <div className="bg-white dark:bg-gray-800 p-1.5 rounded border dark:border-gray-700 text-xs shadow-sm hover:shadow hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <div className="font-bold truncate dark:text-white">{event.title}</div>
+                        <div className="text-gray-500 dark:text-gray-400 truncate text-[10px]">
                            {new Date(event.start_time).getHours()}:{new Date(event.start_time).getMinutes().toString().padStart(2, '0')}
                            {event.companies && ` | ${event.companies.name}`}
                         </div>

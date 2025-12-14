@@ -48,12 +48,12 @@ export default async function Home() {
     <div className="container mx-auto p-8">
       {/* リマインダーアラート */}
       {urgentEvents.length > 0 && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8 rounded shadow-sm">
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 dark:border-yellow-600 p-4 mb-8 rounded shadow-sm">
           <div className="flex items-start">
             <div className="flex-shrink-0 text-xl">⚠️</div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-yellow-800">直近の予定があります ({urgentEvents.length}件)</h3>
-              <div className="mt-2 text-sm text-yellow-700">
+              <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">直近の予定があります ({urgentEvents.length}件)</h3>
+              <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
                 <ul className="list-disc pl-5 space-y-1">
                   {urgentEvents.map(event => (
                     <li key={event.id}>
@@ -69,8 +69,8 @@ export default async function Home() {
 
       <div className="flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-3xl font-bold mb-2">就活管理ダッシュボード</h1>
-          <p className="text-gray-600">ようこそ、就活生さん</p>
+          <h1 className="text-3xl font-bold mb-2 dark:text-white">就活管理ダッシュボード</h1>
+          <p className="text-gray-600 dark:text-gray-400">ようこそ、就活生さん</p>
         </div>
         <div className="flex gap-4">
           <Link
@@ -87,19 +87,19 @@ export default async function Home() {
         <WeeklyCalendar events={upcomingEvents || []} />
 
         {/* 未完了タスク */}
-        <section className="bg-white p-6 rounded-xl border shadow-sm">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+        <section className="bg-white dark:bg-gray-800 p-6 rounded-xl border dark:border-gray-700 shadow-sm transition-colors">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">
             📝 未完了タスク
           </h2>
           
           {pendingTasks && pendingTasks.length > 0 ? (
              <div className="flex flex-col gap-3">
               {pendingTasks.map((task) => (
-                <div key={task.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded">
-                   <div className="w-3 h-3 rounded-full border-2 border-gray-400"></div>
+                <div key={task.id} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded dark:border dark:border-gray-700">
+                   <div className="w-3 h-3 rounded-full border-2 border-gray-400 dark:border-gray-500"></div>
                    <div className="flex-1">
-                      <div className="font-medium">{task.title}</div>
-                      <div className="text-xs text-gray-500">
+                      <div className="font-medium dark:text-gray-200">{task.title}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
                         {task.companies?.name ? `${task.companies.name} • ` : ''}
                         期限: {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'なし'}
                       </div>
@@ -122,19 +122,19 @@ export default async function Home() {
       
       {/* クイックリンク */}
       <section className="mt-10">
-        <h2 className="text-xl font-bold mb-4">クイックアクセス</h2>
+        <h2 className="text-xl font-bold mb-4 dark:text-white">クイックアクセス</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Link href="/companies/new" className="group p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition flex flex-col items-center justify-center gap-3 h-36">
                 <span className="text-4xl group-hover:rotate-12 transition transform">🏢</span>
                 <span className="font-bold text-lg">企業を追加</span>
             </Link>
             
-            <Link href="/companies" className="group p-6 bg-white border-2 border-blue-100 text-blue-600 rounded-xl shadow-sm hover:border-blue-300 hover:shadow-md transition flex flex-col items-center justify-center gap-3 h-36">
+            <Link href="/companies" className="group p-6 bg-white dark:bg-gray-800 border-2 border-blue-100 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 rounded-xl shadow-sm hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-md transition flex flex-col items-center justify-center gap-3 h-36">
                 <span className="text-4xl">📝</span>
                 <span className="font-bold text-lg">ES・タスク確認</span>
             </Link>
 
-             <div className="p-6 bg-gray-50 border-2 border-dashed border-gray-200 text-gray-400 rounded-xl flex flex-col items-center justify-center gap-3 h-36 cursor-not-allowed">
+             <div className="p-6 bg-gray-50 dark:bg-gray-900 border-2 border-dashed border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-600 rounded-xl flex flex-col items-center justify-center gap-3 h-36 cursor-not-allowed">
                 <span className="text-3xl">📊</span>
                 <span className="font-bold">分析(準備中)</span>
             </div>

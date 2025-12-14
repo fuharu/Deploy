@@ -95,15 +95,15 @@ function EventItem({ event, companyId }: { event: Event, companyId: string }) {
   const format = (d: Date) => `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
 
   return (
-    <div className="border-l-4 border-blue-500 bg-white p-3 rounded shadow-sm hover:shadow transition group">
+    <div className="border-l-4 border-blue-500 bg-white dark:bg-gray-800 p-3 rounded shadow-sm hover:shadow transition group">
         <div className="flex justify-between items-start">
             <div>
-                <div className="font-bold text-sm mb-1">{event.title} <span className="text-xs font-normal text-gray-500 bg-gray-100 px-1 rounded ml-1">{event.type}</span></div>
-                <div className="text-xs text-gray-600">
+                <div className="font-bold text-sm mb-1 dark:text-white">{event.title} <span className="text-xs font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-1 rounded ml-1">{event.type}</span></div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">
                     🕒 {format(startDate)} ~ {format(endDate)}
                 </div>
                 {event.location && (
-                    <div className="text-xs text-blue-500 mt-1 truncate max-w-[200px]">
+                    <div className="text-xs text-blue-500 dark:text-blue-400 mt-1 truncate max-w-[200px]">
                         📍 {event.location}
                     </div>
                 )}

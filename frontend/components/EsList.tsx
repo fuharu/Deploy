@@ -112,9 +112,9 @@ function EsItem({ es, companyId }: { es: ES, companyId: string }) {
   }
 
   return (
-    <div className="border p-4 rounded bg-white hover:bg-gray-50 transition group">
+    <div className="border p-4 rounded bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition group">
         <div className="flex justify-between items-start mb-2">
-            <h3 className="font-medium">{es.question}</h3>
+            <h3 className="font-medium dark:text-gray-200">{es.question}</h3>
             <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition">
                 <button onClick={() => setIsEditing(true)} className="text-xs text-blue-500 hover:underline">編集</button>
                 <form action={deleteESEntry}>
@@ -124,10 +124,10 @@ function EsItem({ es, companyId }: { es: ES, companyId: string }) {
                 </form>
             </div>
         </div>
-        <p className="text-sm text-gray-700 whitespace-pre-wrap line-clamp-3">
-            {es.answer || <span className="text-gray-400 italic">回答未入力</span>}
+        <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap line-clamp-3">
+            {es.answer || <span className="text-gray-400 dark:text-gray-600 italic">回答未入力</span>}
         </p>
-        <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
+        <div className="flex justify-between items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
             <span>{es.status === 'Completed' ? '✅ 完了' : '📝 下書き'}</span>
             <span>{es.answer?.length || 0} / {es.max_chars || '∞'} 文字</span>
         </div>

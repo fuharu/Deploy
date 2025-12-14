@@ -60,22 +60,22 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
   return (
     <div className="container mx-auto p-8">
       <div className="mb-6">
-        <Link href="/companies" className="text-gray-500 hover:text-gray-800 flex items-center gap-1 text-sm">
+        <Link href="/companies" className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 flex items-center gap-1 text-sm">
            &larr; 一覧に戻る
         </Link>
       </div>
 
-      <div className="bg-white border rounded-xl p-8 shadow-sm mb-10">
+      <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-8 shadow-sm mb-10 transition-colors">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
              <div className="flex items-center gap-4 mb-2">
-                <div className="w-16 h-16 rounded-xl bg-gray-100 flex items-center justify-center text-3xl font-bold text-gray-400">
+                <div className="w-16 h-16 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-3xl font-bold text-gray-400 dark:text-gray-500">
                     {company.name.charAt(0)}
                 </div>
                 <div>
-                    <h1 className="text-4xl font-extrabold text-gray-900">{company.name}</h1>
+                    <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">{company.name}</h1>
                      {company.url && (
-                        <a href={company.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-sm flex items-center gap-1 mt-1">
+                        <a href={company.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 dark:text-blue-400 hover:underline text-sm flex items-center gap-1 mt-1">
                           🔗 公式サイト
                         </a>
                      )}
@@ -84,12 +84,12 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
              
              <div className="flex gap-3 items-center mt-2">
                <span className={`px-3 py-1 rounded-full text-sm font-bold border ${
-                    company.status === 'Interested' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
-                    company.status === 'Entry' ? 'bg-blue-50 text-blue-600 border-blue-200' :
-                    company.status === 'ES_Submit' ? 'bg-blue-100 text-blue-800 border-blue-300' :
-                    company.status === 'Interview' ? 'bg-orange-100 text-orange-800 border-orange-200' :
-                    company.status === 'Offer' ? 'bg-green-100 text-green-800 border-green-200' :
-                    'bg-gray-100 text-gray-500 border-gray-200'
+                    company.status === 'Interested' ? 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800' :
+                    company.status === 'Entry' ? 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800' :
+                    company.status === 'ES_Submit' ? 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-800/40 dark:text-blue-200 dark:border-blue-700' :
+                    company.status === 'Interview' ? 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800' :
+                    company.status === 'Offer' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' :
+                    'bg-gray-100 text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700'
                   }`}>
                     {{
                         Interested: '気になる',
@@ -100,7 +100,7 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
                         Rejected: 'お見送り',
                     }[company.status] || company.status}
                </span>
-               <span className="text-gray-600 text-sm flex items-center gap-1">
+               <span className="text-gray-600 dark:text-gray-400 text-sm flex items-center gap-1">
                  志望度: <span className="text-yellow-500">{'★'.repeat(company.motivation_level)}</span>{'☆'.repeat(5 - company.motivation_level)}
                </span>
              </div>
@@ -108,13 +108,13 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
           <div className="flex gap-2">
              <Link 
                 href={`/companies/${company.id}/edit`}
-                className="bg-white border text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium"
+                className="bg-white dark:bg-gray-800 border dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm font-medium"
              >
                編集
              </Link>
              <form action={deleteCompany}>
                 <input type="hidden" name="id" value={company.id} />
-                <button type="submit" className="bg-white border border-red-200 text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 transition shadow-sm font-medium">
+                <button type="submit" className="bg-white dark:bg-gray-800 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 px-4 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition shadow-sm font-medium">
                   削除
                 </button>
              </form>
@@ -125,16 +125,16 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* 左カラム: イベント・タスク */}
         <div className="flex flex-col gap-8">
-          <div className="bg-white border rounded-xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">📅 イベント・日程</h2>
+          <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 shadow-sm transition-colors">
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">📅 イベント・日程</h2>
              <EventList 
                companyId={company.id}
                initialEvents={events || []}
              />
           </div>
 
-          <div className="bg-white border rounded-xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">✅ タスク (Todo)</h2>
+          <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 shadow-sm transition-colors">
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">✅ タスク (Todo)</h2>
              <TodoList 
                 companyId={company.id}
                 initialTasks={tasks || []}
@@ -144,8 +144,8 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
 
         {/* 右カラム: ES・メモ */}
         <div className="flex flex-col gap-8">
-           <div className="bg-white border rounded-xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">📝 エントリーシート (ES)</h2>
+           <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 shadow-sm transition-colors">
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">📝 エントリーシート (ES)</h2>
              <EsList 
                companyId={company.id}
                initialEsList={esList || []} // Type assertion might be needed if types don't match perfectly, but let's try

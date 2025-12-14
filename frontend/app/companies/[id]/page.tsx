@@ -77,7 +77,7 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
                 <div>
                     <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">{company.name}</h1>
                      {company.url && (
-                        <a href={company.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 dark:text-blue-400 hover:underline text-sm flex items-center gap-1 mt-1">
+                        <a href={company.url} target="_blank" rel="noopener noreferrer" className="text-indigo-500 dark:text-indigo-400 hover:underline text-sm flex items-center gap-1 mt-1">
                           <LinkIcon className="w-3 h-3" /> 公式サイト
                         </a>
                      )}
@@ -87,10 +87,10 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
              <div className="flex gap-3 items-center mt-2">
                <span className={`px-3 py-1 rounded-full text-sm font-bold border ${
                     company.status === 'Interested' ? 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800' :
-                    company.status === 'Entry' ? 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800' :
-                    company.status === 'ES_Submit' ? 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-800/40 dark:text-blue-200 dark:border-blue-700' :
+                    company.status === 'Entry' ? 'bg-indigo-50 text-indigo-600 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-800' :
+                    company.status === 'ES_Submit' ? 'bg-violet-100 text-violet-800 border-violet-300 dark:bg-violet-800/40 dark:text-violet-200 dark:border-violet-700' :
                     company.status === 'Interview' ? 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800' :
-                    company.status === 'Offer' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' :
+                    company.status === 'Offer' ? 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800' :
                     'bg-gray-100 text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700'
                   }`}>
                     {{
@@ -128,7 +128,7 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
         {/* 左カラム: イベント・タスク */}
         <div className="flex flex-col gap-4 lg:gap-8">
           <SectionCard 
-            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white"><Calendar className="w-6 h-6 text-blue-500" /> イベント・日程</h2>}
+            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white"><Calendar className="w-6 h-6 text-indigo-500" /> イベント・日程</h2>}
             defaultOpen={true}
           >
              <EventList 
@@ -138,7 +138,7 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
           </SectionCard>
 
           <SectionCard 
-            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white"><CheckSquare className="w-6 h-6 text-green-500" /> タスク (Todo)</h2>}
+            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white"><CheckSquare className="w-6 h-6 text-emerald-500" /> タスク (Todo)</h2>}
             defaultOpen={true}
           >
              <TodoList 
@@ -151,7 +151,7 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
         {/* 右カラム: ES・メモ */}
         <div className="flex flex-col gap-4 lg:gap-8">
            <SectionCard 
-             title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white"><FileText className="w-6 h-6 text-indigo-500" /> エントリーシート (ES)</h2>}
+             title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white"><FileText className="w-6 h-6 text-violet-500" /> エントリーシート (ES)</h2>}
              defaultOpen={false}
            >
              <EsList 

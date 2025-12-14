@@ -28,7 +28,7 @@ export default function NewCompanyPage() {
 
   return (
     <div className="container mx-auto p-8 max-w-2xl">
-      <Link href="/companies" className="text-blue-500 hover:underline mb-4 inline-block">
+      <Link href="/companies" className="text-indigo-500 hover:underline mb-4 inline-block">
         &larr; 一覧に戻る
       </Link>
       <h1 className="text-2xl font-bold mb-6">企業新規登録</h1>
@@ -59,12 +59,12 @@ export default function NewCompanyPage() {
 
         {/* 検索結果表示エリア */}
         {searchResults.length > 0 && (
-            <div className="bg-blue-50 border border-blue-200 rounded p-4 text-sm">
-                <p className="font-bold mb-2 text-blue-800">検索結果 (URLを選択):</p>
+            <div className="bg-indigo-50 border border-indigo-200 rounded p-4 text-sm">
+                <p className="font-bold mb-2 text-indigo-800">検索結果 (URLを選択):</p>
                 <ul className="flex flex-col gap-3">
                     {searchResults.map((result, idx) => (
-                        <li key={idx} className="bg-white p-2 rounded border border-blue-100 hover:shadow-md transition cursor-pointer" onClick={() => handleSelectUrl(result.link)}>
-                            <div className="font-bold text-blue-600 truncate">{result.title}</div>
+                        <li key={idx} className="bg-white p-2 rounded border border-indigo-100 hover:shadow-md transition cursor-pointer" onClick={() => handleSelectUrl(result.link)}>
+                            <div className="font-bold text-indigo-600 truncate">{result.title}</div>
                             <div className="text-xs text-gray-500 truncate">{result.link}</div>
                         </li>
                     ))}
@@ -103,7 +103,7 @@ export default function NewCompanyPage() {
             </label>
         </div>
 
-        <button type="submit" className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition font-medium">
+        <button type="submit" className="bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition font-medium">
           登録する
         </button>
       </form>

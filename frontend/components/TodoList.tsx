@@ -45,7 +45,7 @@ export default function TodoList({
              type="date" 
              className="border dark:border-gray-600 rounded px-2 py-2 text-sm w-32 dark:bg-gray-700 dark:text-white" 
           />
-          <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium whitespace-nowrap transition">
+          <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm font-medium whitespace-nowrap transition">
              追加
           </button>
       </form>

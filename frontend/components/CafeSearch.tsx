@@ -76,7 +76,7 @@ export default function CafeSearch({ defaultLocation }: { defaultLocation?: stri
                             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name + ' ' + place.address)}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="text-blue-500 dark:text-blue-400 hover:underline"
+                            className="text-indigo-500 dark:text-indigo-400 hover:underline"
                         >
                             Google Mapで見る
                         </a>

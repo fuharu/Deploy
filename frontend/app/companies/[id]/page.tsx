@@ -123,7 +123,7 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8">
         {/* 左カラム: イベント・タスク */}
         <div className="flex flex-col gap-4 lg:gap-8">
           <SectionCard 

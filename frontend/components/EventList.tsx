@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { addEvent, deleteEvent } from '@/app/companies/[id]/event_actions'
+import { Calendar, Clock, MapPin, Trash2 } from 'lucide-react'
 
 type Event = {
   id: string
@@ -81,7 +82,9 @@ export default function EventList({
 
         {initialEvents.length === 0 && (
             <div className="text-center py-8 bg-gray-50 dark:bg-gray-900/50 rounded border border-dashed border-gray-200 dark:border-gray-700">
-                <div className="text-2xl mb-2 opacity-50">📅</div>
+                <div className="flex justify-center mb-2">
+                    <Calendar className="w-8 h-8 text-gray-300 dark:text-gray-600" />
+                </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                     イベントはまだありません。<br/>上のフォームから予定を追加しましょう。
                 </p>
@@ -104,19 +107,21 @@ function EventItem({ event, companyId }: { event: Event, companyId: string }) {
         <div className="flex justify-between items-start">
             <div>
                 <div className="font-bold text-sm mb-1 dark:text-white">{event.title} <span className="text-xs font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-1 rounded ml-1">{event.type}</span></div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                    🕒 {format(startDate)} ~ {format(endDate)}
+                <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                    <Clock className="w-3 h-3" /> {format(startDate)} ~ {format(endDate)}
                 </div>
                 {event.location && (
-                    <div className="text-xs text-blue-500 dark:text-blue-400 mt-1 truncate max-w-[200px]">
-                        📍 {event.location}
+                    <div className="text-xs text-blue-500 dark:text-blue-400 mt-1 truncate max-w-[200px] flex items-center gap-1">
+                        <MapPin className="w-3 h-3" /> {event.location}
                     </div>
                 )}
             </div>
             <form action={deleteEvent} className="opacity-0 group-hover:opacity-100 transition">
                 <input type="hidden" name="id" value={event.id} />
                 <input type="hidden" name="company_id" value={companyId} />
-                <button className="text-red-400 hover:text-red-600 text-xs">削除</button>
+                <button className="text-gray-400 hover:text-red-600 text-xs p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition">
+                    <Trash2 className="w-4 h-4" />
+                </button>
             </form>
         </div>
     </div>

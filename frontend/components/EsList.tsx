@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { addESEntry, updateESEntry, deleteESEntry } from '@/app/companies/[id]/es_actions'
+import { FileText, Edit, Trash2, CheckCircle2 } from 'lucide-react'
 
 type ES = {
   id: string
@@ -58,7 +59,9 @@ export default function EsList({
 
         {initialEsList.length === 0 && (
             <div className="text-center py-8 bg-gray-50 dark:bg-gray-900/50 rounded border border-dashed border-gray-200 dark:border-gray-700">
-                <div className="text-2xl mb-2 opacity-50">📝</div>
+                <div className="flex justify-center mb-2">
+                    <FileText className="w-8 h-8 text-gray-300 dark:text-gray-600" />
+                </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                     ESはまだありません。<br/>上のフォームから設問を追加してください。
                 </p>
@@ -121,11 +124,15 @@ function EsItem({ es, companyId }: { es: ES, companyId: string }) {
         <div className="flex justify-between items-start mb-2">
             <h3 className="font-medium dark:text-gray-200">{es.question}</h3>
             <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                <button onClick={() => setIsEditing(true)} className="text-xs text-blue-500 hover:underline">編集</button>
+                <button onClick={() => setIsEditing(true)} className="text-xs text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 p-1 rounded transition">
+                    <Edit className="w-4 h-4" />
+                </button>
                 <form action={deleteESEntry}>
                     <input type="hidden" name="id" value={es.id} />
                     <input type="hidden" name="company_id" value={companyId} />
-                    <button className="text-xs text-red-500 hover:underline">削除</button>
+                    <button className="text-xs text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-1 rounded transition">
+                        <Trash2 className="w-4 h-4" />
+                    </button>
                 </form>
             </div>
         </div>
@@ -133,7 +140,10 @@ function EsItem({ es, companyId }: { es: ES, companyId: string }) {
             {es.answer || <span className="text-gray-400 dark:text-gray-600 italic">回答未入力</span>}
         </p>
         <div className="flex justify-between items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
-            <span>{es.status === 'Completed' ? '✅ 完了' : '📝 下書き'}</span>
+            <span className="flex items-center gap-1">
+                {es.status === 'Completed' ? <CheckCircle2 className="w-3 h-3 text-green-500" /> : <FileText className="w-3 h-3 text-gray-400" />}
+                {es.status === 'Completed' ? '完了' : '下書き'}
+            </span>
             <span>{es.answer?.length || 0} / {es.max_chars || '∞'} 文字</span>
         </div>
     </div>

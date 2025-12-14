@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import Link from 'next/link'
 import { redirect, notFound } from 'next/navigation'
 import { deleteCompany } from './actions'
+import { Calendar, CheckSquare, Coffee, FileText, Link as LinkIcon, Edit, Trash2 } from 'lucide-react'
 
 import EsList from '@/components/EsList'
 import TodoList from '@/components/TodoList'
@@ -77,7 +78,7 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
                     <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">{company.name}</h1>
                      {company.url && (
                         <a href={company.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 dark:text-blue-400 hover:underline text-sm flex items-center gap-1 mt-1">
-                          🔗 公式サイト
+                          <LinkIcon className="w-3 h-3" /> 公式サイト
                         </a>
                      )}
                 </div>
@@ -127,7 +128,7 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
         {/* 左カラム: イベント・タスク */}
         <div className="flex flex-col gap-4 lg:gap-8">
           <SectionCard 
-            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white">📅 イベント・日程</h2>}
+            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white"><Calendar className="w-6 h-6 text-blue-500" /> イベント・日程</h2>}
             defaultOpen={true}
           >
              <EventList 
@@ -137,7 +138,7 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
           </SectionCard>
 
           <SectionCard 
-            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white">✅ タスク (Todo)</h2>}
+            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white"><CheckSquare className="w-6 h-6 text-green-500" /> タスク (Todo)</h2>}
             defaultOpen={true}
           >
              <TodoList 
@@ -150,7 +151,7 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
         {/* 右カラム: ES・メモ */}
         <div className="flex flex-col gap-4 lg:gap-8">
            <SectionCard 
-             title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white">📝 エントリーシート (ES)</h2>}
+             title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white"><FileText className="w-6 h-6 text-indigo-500" /> エントリーシート (ES)</h2>}
              defaultOpen={false}
            >
              <EsList 
@@ -160,7 +161,7 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
           </SectionCard>
 
           <SectionCard 
-            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white">☕ 周辺カフェ検索</h2>}
+            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white"><Coffee className="w-6 h-6 text-orange-500" /> 周辺カフェ検索</h2>}
             defaultOpen={false}
           >
             <CafeSearch defaultLocation={defaultLocation} />

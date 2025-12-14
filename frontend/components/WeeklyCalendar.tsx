@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { CalendarDays, Clock } from 'lucide-react'
 
 type Event = {
   id: string
@@ -35,7 +36,7 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 shadow-sm p-6 transition-colors">
       <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">
-        📅 今週のスケジュール
+        <CalendarDays className="w-6 h-6 text-blue-500" /> 今週のスケジュール
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
         {weekDays.map((date, i) => {
@@ -56,7 +57,7 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
                      <div className="bg-white dark:bg-gray-700 p-2 rounded border-l-4 border-l-blue-500 border-y border-r border-gray-100 dark:border-gray-600 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all">
                         <div className="font-bold truncate dark:text-gray-100 text-xs mb-0.5">{event.title}</div>
                         <div className="text-gray-500 dark:text-gray-300 truncate text-[10px] flex items-center gap-1">
-                           <span>🕒 {new Date(event.start_time).getHours()}:{new Date(event.start_time).getMinutes().toString().padStart(2, '0')}</span>
+                           <Clock className="w-3 h-3" /> <span>{new Date(event.start_time).getHours()}:{new Date(event.start_time).getMinutes().toString().padStart(2, '0')}</span>
                         </div>
                      </div>
                   </Link>

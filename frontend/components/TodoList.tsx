@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { addTask, toggleTask, deleteTask } from '@/app/companies/[id]/todo_actions'
+import { CheckCircle2, X } from 'lucide-react'
 
 type Task = {
   id: string
@@ -56,7 +57,9 @@ export default function TodoList({
 
         {initialTasks.length === 0 && (
             <div className="text-center py-8 bg-gray-50 dark:bg-gray-900/50 rounded border border-dashed border-gray-200 dark:border-gray-700">
-                <div className="text-2xl mb-2 opacity-50">✅</div>
+                <div className="flex justify-center mb-2">
+                    <CheckCircle2 className="w-8 h-8 text-gray-300 dark:text-gray-600" />
+                </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                     タスクはまだありません。<br/>上のフォームから追加できます。
                 </p>
@@ -92,7 +95,9 @@ function TaskItem({ task, companyId }: { task: Task, companyId: string }) {
       <form action={deleteTask} className="opacity-0 group-hover:opacity-100 transition">
          <input type="hidden" name="id" value={task.id} />
          <input type="hidden" name="company_id" value={companyId} />
-         <button className="text-red-400 hover:text-red-600 px-2">&times;</button>
+         <button className="text-gray-400 hover:text-red-500 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+            <X className="w-4 h-4" />
+         </button>
       </form>
     </div>
   )

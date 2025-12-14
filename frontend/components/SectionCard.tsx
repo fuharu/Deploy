@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { ChevronDown } from 'lucide-react'
 
 type SectionCardProps = {
   title: React.ReactNode
@@ -32,16 +33,9 @@ export default function SectionCard({
             className="md:hidden text-gray-500 dark:text-gray-400 p-1"
             aria-label={isOpen ? "閉じる" : "開く"}
          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              strokeWidth={1.5} 
-              stroke="currentColor" 
+            <ChevronDown 
               className={`w-5 h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-            </svg>
+            />
          </button>
       </div>
 

@@ -53,7 +53,7 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
   })
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-white/10 shadow-md shadow-indigo-50 dark:shadow-none p-6 transition-all hover:shadow-lg hover:-translate-y-1">
+    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-white/20 shadow-md shadow-indigo-50 dark:shadow-none p-6 transition-all hover:shadow-lg hover:-translate-y-1">
       <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white text-indigo-950">
         <CalendarDays className="w-6 h-6 text-indigo-600 dark:text-indigo-400" /> 今週のスケジュール
       </h2>
@@ -65,7 +65,7 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
           const weekDayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
           return (
-            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] rounded-2xl p-2 transition-all ${isToday ? 'bg-white dark:bg-slate-800 border-2 border-indigo-600 dark:border-indigo-400 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20 z-10 scale-[1.02]' : 'bg-gray-50 dark:bg-slate-800/50 border border-transparent hover:border-gray-200 dark:hover:border-white/10'}`}>
+            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] rounded-2xl p-2 transition-all ${isToday ? 'bg-white dark:bg-slate-800 border-2 border-indigo-600 dark:border-indigo-400 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20 z-10 scale-[1.02]' : 'bg-gray-50 dark:bg-slate-800/50 border border-transparent hover:border-gray-300 dark:hover:border-white/20'}`}>
               <div className={`text-left md:text-center mb-3 text-sm font-bold flex justify-between md:flex-col md:items-center items-center gap-1 ${i === 0 ? 'text-rose-500' : i === 6 ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-slate-400'}`}>
                 <span className="text-[10px] uppercase tracking-wider font-sans">{weekDayNames[i]}</span>
                 <span className={`w-8 h-8 flex items-center justify-center rounded-full ${isToday ? 'bg-indigo-600 text-white shadow-md' : ''} text-lg font-mono`}>{date.getDate()}</span>

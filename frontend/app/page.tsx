@@ -223,36 +223,36 @@ export default async function Home() {
                  <Rocket className="w-6 h-6 text-indigo-600 dark:text-indigo-400" /> クイックアクセス
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <Link href="/companies/new" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-indigo-100/50 dark:shadow-none hover:shadow-lg border border-gray-100 dark:border-white/10 hover:border-indigo-300 dark:hover:border-indigo-500 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                  <Link href="/companies/new" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-indigo-100/50 dark:shadow-none hover:shadow-lg border border-indigo-200 dark:border-white/20 hover:border-indigo-400 dark:hover:border-indigo-400 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                      <div className="bg-indigo-50 dark:bg-indigo-900/30 p-3 rounded-2xl group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 transition-colors">
+                      <div className="bg-indigo-100 dark:bg-indigo-900/40 p-3 rounded-2xl group-hover:bg-indigo-200 dark:group-hover:bg-indigo-900/60 transition-colors">
                         <Building2 className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                       </div>
-                      <span className="font-bold text-sm text-gray-600 dark:text-slate-300 group-hover:text-indigo-700 dark:group-hover:text-white transition-colors">企業追加</span>
+                      <span className="font-bold text-sm text-gray-700 dark:text-slate-200 group-hover:text-indigo-700 dark:group-hover:text-white transition-colors">企業追加</span>
                   </Link>
                   
-                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-blue-100/50 dark:shadow-none hover:shadow-lg border border-gray-100 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-500 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-blue-100/50 dark:shadow-none hover:shadow-lg border border-blue-200 dark:border-white/20 hover:border-blue-400 dark:hover:border-blue-400 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-full h-1 bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                      <div className="bg-blue-50 dark:bg-blue-900/30 p-3 rounded-2xl group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
+                      <div className="bg-blue-100 dark:bg-blue-900/40 p-3 rounded-2xl group-hover:bg-blue-200 dark:group-hover:bg-blue-900/60 transition-colors">
                          <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                       </div>
-                      <span className="font-bold text-sm text-gray-600 dark:text-slate-300 group-hover:text-blue-700 dark:group-hover:text-white transition-colors">ES管理</span>
+                      <span className="font-bold text-sm text-gray-700 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-white transition-colors">ES管理</span>
                   </Link>
 
-                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-amber-100/50 dark:shadow-none hover:shadow-lg border border-gray-100 dark:border-white/10 hover:border-amber-300 dark:hover:border-amber-500 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-amber-100/50 dark:shadow-none hover:shadow-lg border border-amber-200 dark:border-white/20 hover:border-amber-400 dark:hover:border-amber-400 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-full h-1 bg-amber-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                      <div className="bg-amber-50 dark:bg-amber-900/30 p-3 rounded-2xl group-hover:bg-amber-100 dark:group-hover:bg-amber-900/50 transition-colors">
+                      <div className="bg-amber-100 dark:bg-amber-900/40 p-3 rounded-2xl group-hover:bg-amber-200 dark:group-hover:bg-amber-900/60 transition-colors">
                          <Calendar className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                       </div>
-                      <span className="font-bold text-sm text-gray-600 dark:text-slate-300 group-hover:text-amber-700 dark:group-hover:text-white transition-colors">カレンダー</span>
+                      <span className="font-bold text-sm text-gray-700 dark:text-slate-200 group-hover:text-amber-700 dark:group-hover:text-white transition-colors">カレンダー</span>
                   </Link>
 
-                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-rose-100/50 dark:shadow-none hover:shadow-lg border border-gray-100 dark:border-white/10 hover:border-rose-300 dark:hover:border-rose-500 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                  <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-rose-100/50 dark:shadow-none hover:shadow-lg border border-rose-200 dark:border-white/20 hover:border-rose-400 dark:hover:border-rose-400 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
                        <div className="absolute top-0 left-0 w-full h-1 bg-rose-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                      <div className="bg-rose-50 dark:bg-rose-900/30 p-3 rounded-2xl group-hover:bg-rose-100 dark:group-hover:bg-rose-900/50 transition-colors">
+                      <div className="bg-rose-100 dark:bg-rose-900/40 p-3 rounded-2xl group-hover:bg-rose-200 dark:group-hover:bg-rose-900/60 transition-colors">
                          <BarChart2 className="w-6 h-6 text-rose-600 dark:text-rose-400" />
                       </div>
-                      <span className="font-bold text-sm text-gray-600 dark:text-slate-300 group-hover:text-rose-700 dark:group-hover:text-white transition-colors">分析</span>
+                      <span className="font-bold text-sm text-gray-700 dark:text-slate-200 group-hover:text-rose-700 dark:group-hover:text-white transition-colors">分析</span>
                   </Link>
               </div>
            </section>

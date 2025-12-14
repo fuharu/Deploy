@@ -53,9 +53,9 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
   })
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-md shadow-indigo-50 dark:shadow-none p-6 transition-all hover:shadow-lg hover:-translate-y-1">
+    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-white/10 shadow-md shadow-indigo-50 dark:shadow-none p-6 transition-all hover:shadow-lg hover:-translate-y-1">
       <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white text-indigo-950">
-        <CalendarDays className="w-6 h-6 text-indigo-600" /> 今週のスケジュール
+        <CalendarDays className="w-6 h-6 text-indigo-600 dark:text-indigo-400" /> 今週のスケジュール
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
         {weekDays.map((date, i) => {
@@ -65,20 +65,20 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
           const weekDayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
           return (
-            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] rounded-2xl p-2 transition-all ${isToday ? 'bg-white dark:bg-gray-800 border-2 border-indigo-600 dark:border-indigo-400 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20 z-10 scale-[1.02]' : 'bg-gray-50/50 dark:bg-transparent border border-transparent hover:border-gray-200 dark:hover:border-gray-700'}`}>
-              <div className={`text-left md:text-center mb-3 text-sm font-bold flex justify-between md:flex-col md:items-center items-center gap-1 ${i === 0 ? 'text-rose-500' : i === 6 ? 'text-indigo-600' : 'text-gray-500 dark:text-gray-400'}`}>
+            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] rounded-2xl p-2 transition-all ${isToday ? 'bg-white dark:bg-slate-800 border-2 border-indigo-600 dark:border-indigo-400 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20 z-10 scale-[1.02]' : 'bg-gray-50 dark:bg-slate-800/50 border border-transparent hover:border-gray-200 dark:hover:border-white/10'}`}>
+              <div className={`text-left md:text-center mb-3 text-sm font-bold flex justify-between md:flex-col md:items-center items-center gap-1 ${i === 0 ? 'text-rose-500' : i === 6 ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-slate-400'}`}>
                 <span className="text-[10px] uppercase tracking-wider font-sans">{weekDayNames[i]}</span>
                 <span className={`w-8 h-8 flex items-center justify-center rounded-full ${isToday ? 'bg-indigo-600 text-white shadow-md' : ''} text-lg font-mono`}>{date.getDate()}</span>
               </div>
               <div className="flex flex-col gap-2 flex-1">
                 {dayEvents.map(event => (
                   <Link href={`/companies/${(event as any).company_id || '#'}`} key={event.id} className="block group">
-                     <div className={`bg-white dark:bg-gray-800 p-2 rounded-xl border-l-4 ${getEventBorderColor(event.type)} border-y border-r border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all`}>
+                     <div className={`bg-white dark:bg-slate-800 p-2 rounded-xl border-l-4 ${getEventBorderColor(event.type)} border-y border-r border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all`}>
                         <div className="font-bold truncate dark:text-gray-100 text-xs mb-1 flex items-center gap-1">
                             {getEventIcon(event.type)}
                             <span className="truncate">{event.title}</span>
                         </div>
-                        <div className="text-gray-500 dark:text-gray-400 truncate text-[10px] flex items-center gap-1 pl-4 font-mono">
+                        <div className="text-gray-500 dark:text-slate-400 truncate text-[10px] flex items-center gap-1 pl-4 font-mono">
                            <span>{new Date(event.start_time).getHours()}:{new Date(event.start_time).getMinutes().toString().padStart(2, '0')}</span>
                         </div>
                      </div>

@@ -26,6 +26,19 @@ export default function EsList({
         <EsItem key={es.id} es={es} companyId={companyId} />
       ))}
 
+      {initialEsList.length === 0 && !isAdding && (
+          <div className="text-center py-6 bg-gray-50 rounded border border-dashed border-gray-200">
+              <div className="text-2xl mb-2">📝</div>
+              <p className="text-sm text-gray-500 mb-2">ESはまだ登録されていません</p>
+              <button 
+                  onClick={() => setIsAdding(true)} 
+                  className="text-blue-600 text-sm font-bold hover:underline"
+              >
+                  設問を追加して書き始める
+              </button>
+          </div>
+      )}
+
       {isAdding ? (
         <form action={async (formData) => {
             await addESEntry(formData)

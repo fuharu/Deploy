@@ -2,6 +2,8 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import WeeklyCalendar from "@/components/WeeklyCalendar";
+
 export default async function Home() {
   const supabase = await createClient();
 
@@ -21,7 +23,7 @@ export default async function Home() {
     .select("*, companies(name)")
     .gte("start_time", new Date().toISOString())
     .order("start_time", { ascending: true })
-    .limit(5);
+    .limit(20); // 今週分くらい取得できるように少し多めに
 
   // 未完了タスク取得
   const { data: pendingTasks } = await supabase
@@ -31,8 +33,40 @@ export default async function Home() {
     .order("due_date", { ascending: true })
     .limit(5);
 
+  // リマインド用：明日または今日のイベントを抽出
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(23, 59, 59, 999);
+
+  const urgentEvents = upcomingEvents?.filter(event => {
+    const eventDate = new Date(event.start_time);
+    return eventDate <= tomorrow;
+  }) || [];
+
   return (
     <div className="container mx-auto p-8">
+      {/* リマインダーアラート */}
+      {urgentEvents.length > 0 && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8 rounded shadow-sm">
+          <div className="flex items-start">
+            <div className="flex-shrink-0 text-xl">⚠️</div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-yellow-800">直近の予定があります ({urgentEvents.length}件)</h3>
+              <div className="mt-2 text-sm text-yellow-700">
+                <ul className="list-disc pl-5 space-y-1">
+                  {urgentEvents.map(event => (
+                    <li key={event.id}>
+                        <span className="font-bold">{new Date(event.start_time).toLocaleDateString()} {new Date(event.start_time).getHours()}:{new Date(event.start_time).getMinutes().toString().padStart(2, '0')}</span> - {event.title} ({event.companies?.name || '企業未定'})
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-10">
         <div>
           <h1 className="text-3xl font-bold mb-2">就活管理ダッシュボード</h1>
@@ -45,43 +79,12 @@ export default async function Home() {
           >
             企業管理へ
           </Link>
-          <form action="/auth/signout" method="post">
-             <button className="text-gray-600 px-4 py-3 hover:text-gray-900">
-               ログアウト
-             </button>
-          </form>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* 直近の予定 */}
-        <section className="bg-white p-6 rounded-xl border shadow-sm">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              📅 直近の予定
-            </h2>
-            <Link href="/calendar" className="text-sm text-blue-500 hover:underline">
-              カレンダーを見る &rarr;
-            </Link>
-          </div>
-          
-          {upcomingEvents && upcomingEvents.length > 0 ? (
-            <div className="flex flex-col gap-3">
-              {upcomingEvents.map((event) => (
-                <div key={event.id} className="p-3 bg-blue-50 rounded border-l-4 border-blue-500">
-                  <div className="font-bold">{event.title}</div>
-                  <div className="text-sm text-gray-600">
-                    {new Date(event.start_time).toLocaleString('ja-JP', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                    <span className="mx-2 text-gray-300">|</span>
-                    {event.companies?.name || '企業未定'}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 py-4 text-center">予定はありません 🎉</p>
-          )}
-        </section>
+      <div className="flex flex-col gap-8">
+        {/* 週間スケジュール */}
+        <WeeklyCalendar events={upcomingEvents || []} />
 
         {/* 未完了タスク */}
         <section className="bg-white p-6 rounded-xl border shadow-sm">
@@ -105,7 +108,14 @@ export default async function Home() {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 py-4 text-center">タスクはありません ✨</p>
+            <div className="text-center py-8">
+                <div className="text-4xl mb-2">🎉</div>
+                <p className="text-green-600 font-bold mb-2">素晴らしい！全てのタスクが完了しています</p>
+                <p className="text-sm text-gray-500 mb-4">新しいタスクは各企業の詳細ページから追加できます</p>
+                <Link href="/companies" className="text-blue-500 text-sm hover:underline">
+                    企業一覧へ &rarr;
+                </Link>
+            </div>
           )}
         </section>
       </div>
@@ -114,12 +124,18 @@ export default async function Home() {
       <section className="mt-10">
         <h2 className="text-xl font-bold mb-4">クイックアクセス</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Link href="/companies/new" className="p-4 bg-white border rounded-lg hover:shadow-md transition text-center flex flex-col items-center justify-center gap-2 h-32">
-                <span className="text-2xl">🏢</span>
-                <span className="font-bold">企業追加</span>
+            <Link href="/companies/new" className="group p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition flex flex-col items-center justify-center gap-3 h-36">
+                <span className="text-4xl group-hover:rotate-12 transition transform">🏢</span>
+                <span className="font-bold text-lg">企業を追加</span>
             </Link>
-             <div className="p-4 bg-gray-100 border rounded-lg text-center flex flex-col items-center justify-center gap-2 h-32 opacity-50">
-                <span className="text-2xl">📊</span>
+            
+            <Link href="/companies" className="group p-6 bg-white border-2 border-blue-100 text-blue-600 rounded-xl shadow-sm hover:border-blue-300 hover:shadow-md transition flex flex-col items-center justify-center gap-3 h-36">
+                <span className="text-4xl">📝</span>
+                <span className="font-bold text-lg">ES・タスク確認</span>
+            </Link>
+
+             <div className="p-6 bg-gray-50 border-2 border-dashed border-gray-200 text-gray-400 rounded-xl flex flex-col items-center justify-center gap-3 h-36 cursor-not-allowed">
+                <span className="text-3xl">📊</span>
                 <span className="font-bold">分析(準備中)</span>
             </div>
         </div>

@@ -25,6 +25,19 @@ export default function TodoList({
         <TaskItem key={task.id} task={task} companyId={companyId} />
       ))}
 
+      {initialTasks.length === 0 && !isAdding && (
+          <div className="text-center py-6 bg-gray-50 rounded border border-dashed border-gray-200 mt-2">
+              <div className="text-2xl mb-2">✅</div>
+              <p className="text-sm text-gray-500 mb-2">タスクはありません</p>
+              <button 
+                  onClick={() => setIsAdding(true)} 
+                  className="text-blue-600 text-sm font-bold hover:underline"
+              >
+                  やるべきことを追加する
+              </button>
+          </div>
+      )}
+
       {isAdding ? (
         <form action={async (formData) => {
             await addTask(formData)

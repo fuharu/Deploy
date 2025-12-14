@@ -133,10 +133,10 @@ export default async function Home() {
                 <div className="flex flex-col gap-3 flex-1 overflow-y-auto max-h-[500px]">
                   {pendingTasks.map((task) => (
                     <Link href={`/companies/${task.company_id || '#'}`} key={task.id} className="block group">
-                        <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded border border-transparent hover:border-blue-200 dark:hover:border-blue-800 transition">
-                            <div className="mt-1 w-4 h-4 rounded border-2 border-gray-400 dark:border-gray-500 group-hover:border-blue-500 transition"></div>
+                        <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded border border-transparent dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-500/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                            <div className="mt-1 w-4 h-4 rounded border-2 border-gray-400 dark:border-gray-400 group-hover:border-blue-500 transition"></div>
                             <div className="flex-1 min-w-0">
-                                <div className="font-medium text-sm dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition truncate">{task.title}</div>
+                                <div className="font-medium text-sm dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-300 transition truncate">{task.title}</div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex flex-col gap-0.5">
                                     {task.companies?.name && (
                                         <span className="truncate flex items-center gap-1">
@@ -144,7 +144,7 @@ export default async function Home() {
                                         </span>
                                     )}
                                     {task.due_date && (
-                                        <span className={`flex items-center gap-1 ${new Date(task.due_date) < new Date() ? 'text-red-500 font-bold' : ''}`}>
+                                        <span className={`flex items-center gap-1 ${new Date(task.due_date) < new Date() ? 'text-red-500 dark:text-red-400 font-bold' : ''}`}>
                                             ⏰ {new Date(task.due_date).toLocaleDateString()}
                                         </span>
                                     )}

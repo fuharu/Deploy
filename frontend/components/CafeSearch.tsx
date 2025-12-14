@@ -28,12 +28,8 @@ export default function CafeSearch({ defaultLocation }: { defaultLocation?: stri
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg p-6 shadow-sm transition-colors">
-      <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">
-        ☕ 周辺カフェ検索 (作業・時間調整)
-      </h2>
-      
-      <div className="flex gap-2 mb-4">
+    <div className="flex flex-col gap-4">
+      <div className="flex gap-2">
         <input 
             type="text" 
             value={location}
@@ -60,7 +56,7 @@ export default function CafeSearch({ defaultLocation }: { defaultLocation?: stri
       {places.length > 0 && (
         <div className="flex flex-col gap-3">
             {places.map((place, idx) => (
-                <div key={idx} className="border dark:border-gray-700 p-3 rounded hover:bg-orange-50 dark:hover:bg-orange-900/20 transition">
+                <div key={idx} className="border dark:border-gray-700 p-3 rounded hover:bg-orange-50 dark:hover:bg-orange-900/20 transition bg-white dark:bg-gray-700/20">
                     <div className="flex justify-between items-start">
                         <div className="font-bold text-gray-800 dark:text-gray-200">{place.name}</div>
                         {place.rating && (

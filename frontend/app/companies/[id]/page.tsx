@@ -7,6 +7,7 @@ import EsList from '@/components/EsList'
 import TodoList from '@/components/TodoList'
 import EventList from '@/components/EventList'
 import CafeSearch from '@/components/CafeSearch'
+import SectionCard from '@/components/SectionCard'
 
 export default async function CompanyDetailPage({ params }: { params: { id: string } }) {
   const supabase = await createClient()
@@ -124,36 +125,46 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* 左カラム: イベント・タスク */}
-        <div className="flex flex-col gap-8">
-          <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 shadow-sm transition-colors">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">📅 イベント・日程</h2>
+        <div className="flex flex-col gap-4 lg:gap-8">
+          <SectionCard 
+            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white">📅 イベント・日程</h2>}
+            defaultOpen={true}
+          >
              <EventList 
                companyId={company.id}
                initialEvents={events || []}
              />
-          </div>
+          </SectionCard>
 
-          <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 shadow-sm transition-colors">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">✅ タスク (Todo)</h2>
+          <SectionCard 
+            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white">✅ タスク (Todo)</h2>}
+            defaultOpen={true}
+          >
              <TodoList 
                 companyId={company.id}
                 initialTasks={tasks || []}
              />
-          </div>
+          </SectionCard>
         </div>
 
         {/* 右カラム: ES・メモ */}
-        <div className="flex flex-col gap-8">
-           <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 shadow-sm transition-colors">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">📝 エントリーシート (ES)</h2>
+        <div className="flex flex-col gap-4 lg:gap-8">
+           <SectionCard 
+             title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white">📝 エントリーシート (ES)</h2>}
+             defaultOpen={false}
+           >
              <EsList 
                companyId={company.id}
-               initialEsList={esList || []} // Type assertion might be needed if types don't match perfectly, but let's try
+               initialEsList={esList || []} 
              />
-          </div>
+          </SectionCard>
 
-          {/* カフェ検索は優先度低いため下部へ */}
-          <CafeSearch defaultLocation={defaultLocation} />
+          <SectionCard 
+            title={<h2 className="text-xl font-bold flex items-center gap-2 dark:text-white">☕ 周辺カフェ検索</h2>}
+            defaultOpen={false}
+          >
+            <CafeSearch defaultLocation={defaultLocation} />
+          </SectionCard>
         </div>
       </div>
     </div>

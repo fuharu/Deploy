@@ -1,13 +1,32 @@
 'use client'
 
 import Link from 'next/link'
-import { CalendarDays, Clock } from 'lucide-react'
+import { CalendarDays, Clock, Users, Presentation, FileWarning, Calendar } from 'lucide-react'
 
 type Event = {
   id: string
   title: string
   start_time: string
+  type: string
   companies: { name: string } | null
+}
+
+const getEventIcon = (type: string) => {
+  switch (type) {
+    case 'Interview': return <Users className="w-3 h-3 text-amber-500" />;
+    case 'Seminar': return <Presentation className="w-3 h-3 text-emerald-500" />;
+    case 'Deadline': return <FileWarning className="w-3 h-3 text-rose-500" />;
+    default: return <Calendar className="w-3 h-3 text-indigo-500" />;
+  }
+}
+
+const getEventBorderColor = (type: string) => {
+  switch (type) {
+    case 'Interview': return 'border-l-amber-500 dark:border-l-amber-400';
+    case 'Seminar': return 'border-l-emerald-500 dark:border-l-emerald-400';
+    case 'Deadline': return 'border-l-rose-500 dark:border-l-rose-400';
+    default: return 'border-l-indigo-500 dark:border-l-indigo-400';
+  }
 }
 
 export default function WeeklyCalendar({ events }: { events: Event[] }) {
@@ -34,9 +53,9 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
   })
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 shadow-sm p-6 transition-colors">
+    <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 transition-colors">
       <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">
-        <CalendarDays className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> 今週のスケジュール
+        <CalendarDays className="w-6 h-6 text-amber-500" /> 今週のスケジュール
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
         {weekDays.map((date, i) => {
@@ -46,18 +65,21 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
           const weekDayNames = ['日', '月', '火', '水', '木', '金', '土']
 
           return (
-            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] border dark:border-gray-700 rounded-lg p-2 transition-colors ${isToday ? 'bg-indigo-50 dark:bg-indigo-900/10 ring-1 ring-indigo-300 dark:ring-indigo-500 border-transparent' : 'bg-gray-50 dark:bg-transparent'}`}>
+            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] border dark:border-gray-700 rounded-2xl p-2 transition-colors ${isToday ? 'bg-amber-50/50 dark:bg-amber-900/10 ring-2 ring-amber-200 dark:ring-amber-500/50 border-transparent' : 'bg-gray-50/50 dark:bg-transparent'}`}>
               <div className={`text-left md:text-center mb-3 text-sm font-bold flex justify-between md:flex-col md:items-center items-center gap-1 ${i === 0 ? 'text-red-500 dark:text-red-400' : i === 6 ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'}`}>
                 <span className="text-xs opacity-70">{weekDayNames[i]}</span>
-                <span className={`w-8 h-8 flex items-center justify-center rounded-full ${isToday ? 'bg-indigo-600 text-white' : ''} text-lg`}>{date.getDate()}</span>
+                <span className={`w-8 h-8 flex items-center justify-center rounded-full ${isToday ? 'bg-amber-500 text-white shadow-md' : ''} text-lg font-rounded`}>{date.getDate()}</span>
               </div>
               <div className="flex flex-col gap-2 flex-1">
                 {dayEvents.map(event => (
                   <Link href={`/companies/${(event as any).company_id || '#'}`} key={event.id} className="block group">
-                     <div className="bg-white dark:bg-gray-800 p-2 rounded border-l-4 border-l-indigo-600 dark:border-l-indigo-400 border-y border-r border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all">
-                        <div className="font-bold truncate dark:text-gray-100 text-xs mb-0.5">{event.title}</div>
-                        <div className="text-gray-500 dark:text-gray-400 truncate text-[10px] flex items-center gap-1">
-                           <Clock className="w-3 h-3" /> <span>{new Date(event.start_time).getHours()}:{new Date(event.start_time).getMinutes().toString().padStart(2, '0')}</span>
+                     <div className={`bg-white dark:bg-gray-800 p-2 rounded-xl border-l-4 ${getEventBorderColor(event.type)} border-y border-r border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all`}>
+                        <div className="font-bold truncate dark:text-gray-100 text-xs mb-1 flex items-center gap-1">
+                            {getEventIcon(event.type)}
+                            <span className="truncate">{event.title}</span>
+                        </div>
+                        <div className="text-gray-500 dark:text-gray-400 truncate text-[10px] flex items-center gap-1 pl-4">
+                           <span>{new Date(event.start_time).getHours()}:{new Date(event.start_time).getMinutes().toString().padStart(2, '0')}</span>
                         </div>
                      </div>
                   </Link>
@@ -73,4 +95,3 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
     </div>
   )
 }
-

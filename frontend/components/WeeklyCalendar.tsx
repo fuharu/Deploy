@@ -54,21 +54,21 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 transition-colors">
-      <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white">
-        <CalendarDays className="w-6 h-6 text-amber-500" /> 今週のスケジュール
+      <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white text-indigo-950">
+        <CalendarDays className="w-6 h-6 text-indigo-600" /> 今週のスケジュール
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
         {weekDays.map((date, i) => {
           const dateKey = date.toDateString()
           const dayEvents = eventsByDate[dateKey] || []
           const isToday = date.toDateString() === today.toDateString()
-          const weekDayNames = ['日', '月', '火', '水', '木', '金', '土']
+          const weekDayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
           return (
-            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] border dark:border-gray-700 rounded-2xl p-2 transition-colors ${isToday ? 'bg-amber-50/50 dark:bg-amber-900/10 ring-2 ring-amber-200 dark:ring-amber-500/50 border-transparent' : 'bg-gray-50/50 dark:bg-transparent'}`}>
-              <div className={`text-left md:text-center mb-3 text-sm font-bold flex justify-between md:flex-col md:items-center items-center gap-1 ${i === 0 ? 'text-red-500 dark:text-red-400' : i === 6 ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'}`}>
-                <span className="text-xs opacity-70">{weekDayNames[i]}</span>
-                <span className={`w-8 h-8 flex items-center justify-center rounded-full ${isToday ? 'bg-amber-500 text-white shadow-md' : ''} text-lg font-rounded`}>{date.getDate()}</span>
+            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] rounded-2xl p-2 transition-all ${isToday ? 'bg-white dark:bg-gray-800 border-2 border-indigo-600 dark:border-indigo-400 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20 z-10 scale-[1.02]' : 'bg-gray-50/50 dark:bg-transparent border border-transparent hover:border-gray-200 dark:hover:border-gray-700'}`}>
+              <div className={`text-left md:text-center mb-3 text-sm font-bold flex justify-between md:flex-col md:items-center items-center gap-1 ${i === 0 ? 'text-rose-500' : i === 6 ? 'text-indigo-600' : 'text-gray-500 dark:text-gray-400'}`}>
+                <span className="text-[10px] uppercase tracking-wider font-sans">{weekDayNames[i]}</span>
+                <span className={`w-8 h-8 flex items-center justify-center rounded-full ${isToday ? 'bg-indigo-600 text-white shadow-md' : ''} text-lg font-mono`}>{date.getDate()}</span>
               </div>
               <div className="flex flex-col gap-2 flex-1">
                 {dayEvents.map(event => (
@@ -78,7 +78,7 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
                             {getEventIcon(event.type)}
                             <span className="truncate">{event.title}</span>
                         </div>
-                        <div className="text-gray-500 dark:text-gray-400 truncate text-[10px] flex items-center gap-1 pl-4">
+                        <div className="text-gray-500 dark:text-gray-400 truncate text-[10px] flex items-center gap-1 pl-4 font-mono">
                            <span>{new Date(event.start_time).getHours()}:{new Date(event.start_time).getMinutes().toString().padStart(2, '0')}</span>
                         </div>
                      </div>

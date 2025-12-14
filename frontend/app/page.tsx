@@ -15,7 +15,8 @@ import {
   Smile,
   Briefcase,
   Trophy,
-  History
+  History,
+  PenTool
 } from "lucide-react";
 
 import WeeklyCalendar from "@/components/WeeklyCalendar";
@@ -124,33 +125,44 @@ export default async function Home() {
     <div className="container mx-auto p-4 md:p-8 max-w-7xl space-y-8">
       
       {/* ヒーローエリア */}
-      <section className="bg-white dark:bg-gray-800 rounded-3xl p-6 md:p-10 shadow-lg border border-indigo-50 dark:border-gray-700 relative overflow-hidden">
-        {/* 装飾背景 */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-60"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-orange-50 dark:bg-orange-900/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 opacity-60"></div>
+      <section className="bg-white dark:bg-gray-800 rounded-3xl p-6 md:p-10 shadow-xl shadow-indigo-100 dark:shadow-none border border-indigo-50 dark:border-gray-700 relative overflow-hidden bg-dot-pattern">
+        {/* 装飾背景 (薄く) */}
+        <div className="absolute inset-0 bg-white/90 dark:bg-gray-800/95 pointer-events-none"></div>
 
         <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center justify-between">
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-2xl md:text-4xl font-bold mb-4 text-gray-800 dark:text-white flex items-center justify-center md:justify-start gap-3">
+            <h1 className="text-2xl md:text-4xl font-bold mb-4 text-indigo-950 dark:text-white flex items-center justify-center md:justify-start gap-3">
               <span className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
                 <Smile className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
               </span>
               こんにちは、就活生さん！
             </h1>
-            <p className="text-gray-600 dark:text-gray-300 text-lg mb-6">
+            <p className="text-gray-600 dark:text-gray-300 text-lg mb-6 leading-relaxed">
               {urgentEvents.length > 0 
                 ? `明日にかけて${urgentEvents.length}件の予定があります。準備は万端ですか？` 
                 : "直近の緊急タスクはありません。自分のペースで進めましょう。"}
             </p>
             
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-              <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur px-4 py-2 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-indigo-500" />
-                <span className="text-sm font-bold text-gray-700 dark:text-gray-200">エントリー: {statusCounts.Entry}社</span>
+              <div className="bg-white dark:bg-gray-700 px-5 py-3 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 flex items-center gap-3">
+                <div className="bg-indigo-100 dark:bg-indigo-900/50 p-1.5 rounded-lg">
+                    <Briefcase className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <div>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 block font-bold">エントリー</span>
+                    <span className="text-xl font-bold text-gray-900 dark:text-white font-sans">{statusCounts.Entry}</span>
+                    <span className="text-xs text-gray-500 ml-1">社</span>
+                </div>
               </div>
-              <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur px-4 py-2 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-amber-500" />
-                <span className="text-sm font-bold text-gray-700 dark:text-gray-200">内定: {statusCounts.Offer}社</span>
+              <div className="bg-white dark:bg-gray-700 px-5 py-3 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 flex items-center gap-3">
+                <div className="bg-amber-100 dark:bg-amber-900/50 p-1.5 rounded-lg">
+                    <Trophy className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 block font-bold">内定</span>
+                    <span className="text-xl font-bold text-gray-900 dark:text-white font-sans">{statusCounts.Offer}</span>
+                    <span className="text-xs text-gray-500 ml-1">社</span>
+                </div>
               </div>
             </div>
           </div>
@@ -167,14 +179,14 @@ export default async function Home() {
                       className="hover:opacity-90 transition-opacity cursor-pointer"
                     />
                   ))}
-                  <circle cx="50" cy="50" r="35" fill="currentColor" className="text-white dark:text-gray-800" />
+                  <circle cx="50" cy="50" r="38" fill="currentColor" className="text-white dark:text-gray-800" />
                 </svg>
              ) : (
                 <div className="text-gray-400 text-center text-xs">データなし</div>
              )}
              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-3xl font-bold text-gray-800 dark:text-white">{totalCompanies}</span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">Total Companies</span>
+                <span className="text-4xl font-bold text-gray-800 dark:text-white font-sans">{totalCompanies}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Total</span>
              </div>
           </div>
         </div>
@@ -190,7 +202,8 @@ export default async function Home() {
               <ul className="mt-1 space-y-1">
                  {urgentEvents.map(e => (
                    <li key={e.id} className="text-sm text-red-700 dark:text-red-200">
-                      {new Date(e.start_time).toLocaleDateString()} {new Date(e.start_time).getHours()}:{new Date(e.start_time).getMinutes().toString().padStart(2, '0')} - {e.title}
+                      <span className="font-mono font-bold mr-2">{new Date(e.start_time).getHours()}:{new Date(e.start_time).getMinutes().toString().padStart(2, '0')}</span>
+                      {e.title}
                    </li>
                  ))}
               </ul>
@@ -204,36 +217,40 @@ export default async function Home() {
         <div className="lg:col-span-2 space-y-8">
            <WeeklyCalendar events={upcomingEvents || []} />
            
-           {/* クイックアクセス (温かみのあるカラー) */}
+           {/* クイックアクセス (白ベース、メインカラー統一) */}
            <section>
-              <h2 className="text-xl font-bold mb-4 dark:text-white flex items-center gap-2">
-                 <Rocket className="w-6 h-6 text-orange-500" /> クイックアクセス
+              <h2 className="text-xl font-bold mb-4 dark:text-white flex items-center gap-2 text-indigo-900">
+                 <Rocket className="w-6 h-6 text-indigo-600" /> クイックアクセス
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <Link href="/companies/new" className="group p-4 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition flex flex-col items-center justify-center gap-2 h-28">
-                      <div className="bg-white/20 p-2 rounded-full">
-                        <Building2 className="w-6 h-6" />
+                  <Link href="/companies/new" className="group p-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-2xl shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 transition flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                      <div className="bg-indigo-50 dark:bg-indigo-900/30 p-3 rounded-full group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 transition-colors">
+                        <Building2 className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                       </div>
                       <span className="font-bold text-sm">企業追加</span>
                   </Link>
                   
-                  <Link href="/companies" className="group p-4 bg-gradient-to-br from-emerald-400 to-teal-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition flex flex-col items-center justify-center gap-2 h-28">
-                      <div className="bg-white/20 p-2 rounded-full">
-                         <FileText className="w-6 h-6" />
+                  <Link href="/companies" className="group p-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-2xl shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 transition flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                      <div className="bg-blue-50 dark:bg-blue-900/30 p-3 rounded-full group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
+                         <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                       </div>
                       <span className="font-bold text-sm">ES管理</span>
                   </Link>
 
-                  <Link href="/companies" className="group p-4 bg-gradient-to-br from-amber-400 to-orange-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition flex flex-col items-center justify-center gap-2 h-28">
-                      <div className="bg-white/20 p-2 rounded-full">
-                         <Calendar className="w-6 h-6" />
+                  <Link href="/companies" className="group p-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-2xl shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-500 transition flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-amber-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                      <div className="bg-amber-50 dark:bg-amber-900/30 p-3 rounded-full group-hover:bg-amber-100 dark:group-hover:bg-amber-900/50 transition-colors">
+                         <Calendar className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                       </div>
                       <span className="font-bold text-sm">カレンダー</span>
                   </Link>
 
-                  <Link href="/companies" className="group p-4 bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition flex flex-col items-center justify-center gap-2 h-28">
-                      <div className="bg-white/20 p-2 rounded-full">
-                         <BarChart2 className="w-6 h-6" />
+                  <Link href="/companies" className="group p-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-2xl shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 hover:border-rose-300 dark:hover:border-rose-500 transition flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
+                       <div className="absolute top-0 left-0 w-full h-1 bg-rose-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                      <div className="bg-rose-50 dark:bg-rose-900/30 p-3 rounded-full group-hover:bg-rose-100 dark:group-hover:bg-rose-900/50 transition-colors">
+                         <BarChart2 className="w-6 h-6 text-rose-600 dark:text-rose-400" />
                       </div>
                       <span className="font-bold text-sm">分析 (Coming Soon)</span>
                   </Link>
@@ -244,17 +261,17 @@ export default async function Home() {
         {/* 右カラム: タスク & 最近の活動 */}
         <div className="lg:col-span-1 space-y-8">
             {/* 未完了タスク */}
-            <section className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                 <ClipboardList className="w-24 h-24 text-indigo-500" />
+            <section className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+              <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
+                 <ClipboardList className="w-32 h-32 text-indigo-900" />
               </div>
               
               <div className="flex justify-between items-center mb-6 relative z-10">
-                <h2 className="text-lg font-bold flex items-center gap-2 dark:text-white">
-                    <CheckCircle2 className="w-5 h-5 text-indigo-500" /> 今日のタスク
+                <h2 className="text-lg font-bold flex items-center gap-2 dark:text-white text-gray-800">
+                    <CheckCircle2 className="w-5 h-5 text-indigo-600" /> 今日のタスク
                 </h2>
-                <span className="text-xs bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 px-2 py-1 rounded-full font-bold">
-                    残り {pendingTasks ? pendingTasks.length : 0}件
+                <span className="text-xs bg-indigo-50 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 px-3 py-1 rounded-full font-bold font-mono">
+                    {pendingTasks ? pendingTasks.length : 0}
                 </span>
               </div>
               
@@ -262,20 +279,20 @@ export default async function Home() {
                 {pendingTasks && pendingTasks.length > 0 ? (
                     <div className="space-y-3">
                     {pendingTasks.map((task) => (
-                        <Link href={`/companies/${task.company_id || '#'}`} key={task.id} className="block group">
-                            <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition">
-                                <div className="mt-1 w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-500 group-hover:border-indigo-500 transition bg-white dark:bg-gray-800"></div>
+                        <Link href={`/companies/${task.company_id || '#'}`} key={task.id} className="block group/item">
+                            <div className="flex items-start gap-3 p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-indigo-400 dark:hover:border-indigo-500 transition shadow-sm">
+                                <div className="mt-1 w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-500 group-hover/item:border-indigo-500 transition bg-white dark:bg-gray-800"></div>
                                 <div className="flex-1 min-w-0">
-                                    <div className="font-bold text-sm text-gray-800 dark:text-gray-100 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition truncate">{task.title}</div>
+                                    <div className="font-bold text-sm text-gray-800 dark:text-gray-100 group-hover/item:text-indigo-700 dark:group-hover/item:text-indigo-300 transition truncate">{task.title}</div>
                                     <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-2">
                                         {task.companies?.name && (
-                                            <span className="truncate flex items-center gap-1 bg-white dark:bg-gray-800 px-1.5 py-0.5 rounded shadow-sm">
+                                            <span className="truncate flex items-center gap-1 text-gray-500">
                                                 <Building2 className="w-3 h-3" /> {task.companies.name}
                                             </span>
                                         )}
                                         {task.due_date && (
                                             <span className={`flex items-center gap-1 ${new Date(task.due_date) < new Date() ? 'text-red-500 font-bold' : ''}`}>
-                                                <Clock className="w-3 h-3" /> {new Date(task.due_date).toLocaleDateString()}
+                                                <Clock className="w-3 h-3" /> <span className="font-mono">{new Date(task.due_date).toLocaleDateString()}</span>
                                             </span>
                                         )}
                                     </div>
@@ -283,13 +300,13 @@ export default async function Home() {
                             </div>
                         </Link>
                     ))}
-                    <Link href="/companies" className="block text-center text-xs text-indigo-500 hover:text-indigo-600 font-medium mt-4">
+                    <Link href="/companies" className="block text-center text-xs text-gray-500 hover:text-indigo-600 font-medium mt-4 transition-colors">
                         すべてのタスクを確認する
                     </Link>
                     </div>
                 ) : (
                     <div className="text-center py-10">
-                        <div className="inline-block p-4 bg-green-100 dark:bg-green-900/30 rounded-full mb-3 animate-bounce">
+                        <div className="inline-block p-4 bg-green-50 dark:bg-green-900/20 rounded-full mb-3">
                             <Smile className="w-8 h-8 text-green-600 dark:text-green-400" />
                         </div>
                         <p className="font-bold text-gray-800 dark:text-white">素晴らしい！</p>
@@ -301,24 +318,24 @@ export default async function Home() {
             
             {/* 最近の活動 (簡易モック) */}
             <section>
-                 <h2 className="text-lg font-bold mb-4 dark:text-white flex items-center gap-2">
-                    <History className="w-5 h-5 text-gray-500" /> 最近の活動履歴
+                 <h2 className="text-lg font-bold mb-4 dark:text-white flex items-center gap-2 text-gray-800">
+                    <History className="w-5 h-5 text-gray-400" /> 最近の活動履歴
                 </h2>
-                <div className="relative pl-4 border-l-2 border-gray-200 dark:border-gray-700 space-y-6">
-                    <div className="relative">
-                        <div className="absolute -left-[21px] top-0 w-3 h-3 rounded-full bg-indigo-500 border-2 border-white dark:border-gray-900"></div>
-                        <p className="text-xs text-gray-500 mb-0.5">今日 10:30</p>
-                        <p className="text-sm font-medium dark:text-gray-200">株式会社Aの面接日程を登録しました</p>
+                <div className="relative pl-4 border-l-2 border-gray-100 dark:border-gray-700 space-y-8 py-2">
+                    <div className="relative group">
+                        <div className="absolute -left-[21px] top-0 w-3 h-3 rounded-full bg-indigo-500 ring-4 ring-white dark:ring-gray-900 group-hover:scale-125 transition-transform"></div>
+                        <p className="text-xs text-gray-400 font-mono mb-0.5">Today 10:30</p>
+                        <p className="text-sm font-medium dark:text-gray-200 text-gray-800 group-hover:text-indigo-600 transition-colors">株式会社Aの面接日程を登録しました</p>
                     </div>
-                    <div className="relative">
-                        <div className="absolute -left-[21px] top-0 w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600 border-2 border-white dark:border-gray-900"></div>
-                        <p className="text-xs text-gray-500 mb-0.5">昨日 15:00</p>
-                        <p className="text-sm font-medium dark:text-gray-200">株式会社Bのエントリーシートを作成しました</p>
+                    <div className="relative group">
+                        <div className="absolute -left-[21px] top-0 w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600 ring-4 ring-white dark:ring-gray-900 group-hover:scale-125 transition-transform"></div>
+                        <p className="text-xs text-gray-400 font-mono mb-0.5">Yesterday 15:00</p>
+                        <p className="text-sm font-medium dark:text-gray-200 text-gray-800 group-hover:text-indigo-600 transition-colors">株式会社Bのエントリーシートを作成しました</p>
                     </div>
-                     <div className="relative">
-                        <div className="absolute -left-[21px] top-0 w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600 border-2 border-white dark:border-gray-900"></div>
-                        <p className="text-xs text-gray-500 mb-0.5">2日前</p>
-                        <p className="text-sm font-medium dark:text-gray-200">新規アカウントを作成しました</p>
+                     <div className="relative group">
+                        <div className="absolute -left-[21px] top-0 w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600 ring-4 ring-white dark:ring-gray-900 group-hover:scale-125 transition-transform"></div>
+                        <p className="text-xs text-gray-400 font-mono mb-0.5">2 days ago</p>
+                        <p className="text-sm font-medium dark:text-gray-200 text-gray-800 group-hover:text-indigo-600 transition-colors">新規アカウントを作成しました</p>
                     </div>
                 </div>
             </section>

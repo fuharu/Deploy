@@ -53,7 +53,7 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
   })
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 transition-colors">
+    <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-md shadow-indigo-50 dark:shadow-none p-6 transition-all hover:shadow-lg hover:-translate-y-1">
       <h2 className="text-xl font-bold mb-4 flex items-center gap-2 dark:text-white text-indigo-950">
         <CalendarDays className="w-6 h-6 text-indigo-600" /> 今週のスケジュール
       </h2>

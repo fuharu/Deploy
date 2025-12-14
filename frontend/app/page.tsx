@@ -107,7 +107,7 @@ export default async function Home() {
         percentage,
         startAngle,
         endAngle: currentAngle,
-        color: STATUS_CONFIG[status]?.color || "#ccc"
+        color: STATUS_CONFIG[status]?.color || "#94a3b8"
       };
     });
 
@@ -169,21 +169,27 @@ export default async function Home() {
 
           {/* 進捗グラフ (ドーナツチャート) - 太く、コンパクトに */}
           <div className="flex-shrink-0 w-48 h-48 relative flex items-center justify-center bg-white/50 dark:bg-slate-800/30 rounded-full backdrop-blur-sm shadow-inner border border-white/50 dark:border-white/10">
-             {totalCompanies > 0 ? (
-                <svg viewBox="0 0 100 100" className="w-full h-full rotate-[-90deg]">
-                  {pieData.map((d, i) => (
+             <svg viewBox="0 0 100 100" className="w-full h-full rotate-[-90deg]">
+               {/* ベースリング (データがない部分や背景として表示) */}
+               <circle cx="50" cy="50" r="50" className="text-gray-100 dark:text-slate-800" fill="currentColor" />
+               
+               {totalCompanies > 0 ? (
+                  pieData.map((d, i) => (
                     <path
                       key={d.status}
                       d={getPiePath(d.startAngle, d.endAngle)}
                       fill={d.color}
                       className="hover:opacity-90 transition-opacity cursor-pointer"
                     />
-                  ))}
-                  <circle cx="50" cy="50" r="25" fill="currentColor" className="text-white dark:text-slate-900" />
-                </svg>
-             ) : (
-                <div className="text-gray-400 text-center text-xs">データなし</div>
-             )}
+                  ))
+               ) : (
+                  // データなしの場合はグレーのリングを表示（ベースリングで代用可だが明示的に）
+                  <path d={getPiePath(0, 360)} fill="#e2e8f0" className="text-gray-200 dark:text-slate-700" />
+               )}
+               {/* 中央の穴 */}
+               <circle cx="50" cy="50" r="25" fill="currentColor" className="text-white dark:text-slate-900" />
+             </svg>
+             
              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <span className="text-5xl font-bold text-gray-800 dark:text-white font-sans tracking-tight">{totalCompanies}</span>
                 <span className="text-[10px] text-gray-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-1">Total</span>

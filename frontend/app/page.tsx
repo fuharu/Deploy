@@ -24,15 +24,7 @@ import {
 
 import WeeklyCalendar from "@/components/WeeklyCalendar";
 
-// ステータスごとの設定
-const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  Interested: { label: "気になる", color: "#6366f1", bg: "bg-indigo-500" }, // Indigo
-  Entry: { label: "エントリー", color: "#3b82f6", bg: "bg-blue-500" }, // Blue
-  ES_Submit: { label: "ES提出済", color: "#0ea5e9", bg: "bg-sky-500" }, // Sky
-  Interview: { label: "面接中", color: "#f59e0b", bg: "bg-amber-500" }, // Amber
-  Offer: { label: "内定", color: "#22c55e", bg: "bg-green-500" }, // Green
-  Rejected: { label: "不採用", color: "#ef4444", bg: "bg-red-500" }, // Red
-};
+const GOAL_COMPANIES = 30;
 
 export default async function Home() {
   const supabase = await createClient();
@@ -108,32 +100,29 @@ export default async function Home() {
     GreetingIcon = Moon;
   }
 
-  // 円グラフ用のデータ計算
-  let currentAngle = 0;
-  const pieData = Object.entries(statusCounts)
-    .filter(([_, count]) => count > 0)
-    .map(([status, count]) => {
-      const percentage = count / totalCompanies;
-      const angle = percentage * 360;
-      const startAngle = currentAngle;
-      currentAngle += angle;
-      return {
-        status,
-        count,
-        percentage,
-        startAngle,
-        endAngle: currentAngle,
-        color: STATUS_CONFIG[status]?.color || "#94a3b8"
-      };
-    });
+  // 円グラフ用のデータ計算 (目標達成度)
+  const percentage = Math.min(totalCompanies / GOAL_COMPANIES, 1);
+  const endAngle = percentage * 360;
 
   // SVG円グラフのパス生成ヘルパー
   const getPiePath = (startAngle: number, endAngle: number) => {
+    // 0度の場合は描画しない
+    if (startAngle === endAngle) return "";
+    
+    // 360度の場合は完全な円を描画
+    if (endAngle - startAngle >= 360) {
+      return `M 50 0 A 50 50 0 1 1 50 100 A 50 50 0 1 1 50 0 Z`;
+    }
+
     const x1 = 50 + 50 * Math.cos(Math.PI * (startAngle - 90) / 180);
     const y1 = 50 + 50 * Math.sin(Math.PI * (startAngle - 90) / 180);
     const x2 = 50 + 50 * Math.cos(Math.PI * (endAngle - 90) / 180);
     const y2 = 50 + 50 * Math.sin(Math.PI * (endAngle - 90) / 180);
     const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
+    
+    // 中心点(50,50)を含まないドーナツ型にするため、内側のパスは描かない（strokeで描画するため）
+    // 今回はpathで扇形を描くのではなく、circleのstroke-dasharrayを使う方式に変更したほうが簡単だが、
+    // 既存のgetPiePathを流用して扇形（パイ）を描く
     return `M 50 50 L ${x1} ${y1} A 50 50 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
   };
 
@@ -161,7 +150,7 @@ export default async function Home() {
             </p>
             
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 flex items-center gap-3">
+              <div className="bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-gray-100 dark:border-white/10 flex items-center gap-3">
                 <div className="bg-gradient-to-br from-indigo-100 to-blue-50 dark:from-indigo-900/50 dark:to-slate-800 p-1.5 rounded-lg">
                     <Briefcase className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                 </div>
@@ -171,7 +160,7 @@ export default async function Home() {
                     <span className="text-xs text-gray-500 ml-1">社</span>
                 </div>
               </div>
-              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 flex items-center gap-3">
+              <div className="bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-gray-100 dark:border-white/10 flex items-center gap-3">
                 <div className="bg-gradient-to-br from-amber-100 to-orange-50 dark:from-amber-900/50 dark:to-slate-800 p-1.5 rounded-lg">
                     <Trophy className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                 </div>
@@ -184,31 +173,31 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* 進捗グラフ (ドーナツチャート) - 太く、コンパクトに */}
+          {/* 進捗グラフ (目標達成度プログレスリング) */}
           <div className="flex-shrink-0 w-48 h-48 relative flex items-center justify-center bg-white/60 dark:bg-slate-800/40 rounded-full backdrop-blur-sm shadow-inner border border-white/50 dark:border-white/10">
              <svg viewBox="0 0 100 100" className="w-full h-full rotate-[-90deg]">
-               {/* ベースリング */}
-               <circle cx="50" cy="50" r="50" className="text-gray-100 dark:text-slate-800" fill="currentColor" />
+               {/* ベースリング (未達成部分) */}
+               <circle cx="50" cy="50" r="40" className="text-gray-100 dark:text-slate-700" strokeWidth="8" stroke="currentColor" fill="none" />
                
-               {totalCompanies > 0 ? (
-                  pieData.map((d, i) => (
-                    <path
-                      key={d.status}
-                      d={getPiePath(d.startAngle, d.endAngle)}
-                      fill={d.color}
-                      className="hover:opacity-90 transition-opacity cursor-pointer"
-                    />
-                  ))
-               ) : (
-                  <path d={getPiePath(0, 360)} fill="#e2e8f0" className="text-gray-200 dark:text-slate-700" />
+               {/* 進捗リング (達成部分) */}
+               {totalCompanies > 0 && (
+                 <circle 
+                   cx="50" 
+                   cy="50" 
+                   r="40" 
+                   className="text-indigo-500 dark:text-indigo-400 drop-shadow-md" 
+                   strokeWidth="8" 
+                   stroke="currentColor" 
+                   fill="none"
+                   strokeDasharray={`${2 * Math.PI * 40 * percentage} ${2 * Math.PI * 40 * (1 - percentage)}`}
+                   strokeLinecap="round"
+                 />
                )}
-               {/* 中央の穴 */}
-               <circle cx="50" cy="50" r="25" fill="currentColor" className="text-white dark:text-slate-900" />
              </svg>
              
              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <span className="text-5xl font-bold text-gray-800 dark:text-white font-sans tracking-tight">{totalCompanies}</span>
-                <span className="text-[10px] text-gray-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-1">Total</span>
+                <span className="text-xs text-gray-400 dark:text-slate-500 font-bold uppercase tracking-wider mt-1">/ {GOAL_COMPANIES} GOAL</span>
              </div>
           </div>
         </div>

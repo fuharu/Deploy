@@ -37,13 +37,20 @@ export default async function Home() {
     redirect("/login");
   }
 
-  // 直近のイベント取得
+  // 今週の日曜日を取得（カレンダー表示用）
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const sunday = new Date(today);
+  sunday.setDate(today.getDate() - dayOfWeek);
+  sunday.setHours(0, 0, 0, 0);
+
+  // 直近のイベント取得（今週の開始日以降を取得してカレンダーに反映させる）
   const { data: upcomingEvents } = await supabase
     .from("events")
     .select("*, companies(name)")
-    .gte("start_time", new Date().toISOString())
+    .gte("start_time", sunday.toISOString())
     .order("start_time", { ascending: true })
-    .limit(20);
+    .limit(50); // 数を少し増やす
 
   // 未完了タスク取得
   const { data: pendingTasks } = await supabase

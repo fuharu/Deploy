@@ -65,10 +65,10 @@ export default function WeeklyCalendar({ events }: { events: Event[] }) {
           const weekDayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
           return (
-            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] rounded-2xl p-2 transition-all ${isToday ? 'bg-white dark:bg-slate-800 border-2 border-indigo-600 dark:border-indigo-400 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20 z-10 scale-[1.02]' : 'bg-gray-50 dark:bg-slate-800/50 border border-transparent hover:border-gray-300 dark:hover:border-white/20'}`}>
+            <div key={i} className={`flex flex-col md:h-full md:min-h-[150px] min-h-[80px] rounded-2xl p-2 transition-all ${isToday ? 'bg-gradient-to-br from-indigo-50 to-white dark:from-slate-800 dark:to-slate-900 border-2 border-indigo-500 dark:border-indigo-400 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20 z-10 scale-[1.02]' : 'bg-gray-50 dark:bg-slate-800/50 border border-transparent hover:border-gray-300 dark:hover:border-white/20'}`}>
               <div className={`text-left md:text-center mb-3 text-sm font-bold flex justify-between md:flex-col md:items-center items-center gap-1 ${i === 0 ? 'text-rose-500' : i === 6 ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-slate-400'}`}>
                 <span className="text-[10px] uppercase tracking-wider font-sans">{weekDayNames[i]}</span>
-                <span className={`w-8 h-8 flex items-center justify-center rounded-full ${isToday ? 'bg-indigo-600 text-white shadow-md' : ''} text-lg font-mono`}>{date.getDate()}</span>
+                <span className={`w-8 h-8 flex items-center justify-center rounded-full ${isToday ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-md' : ''} text-lg font-mono`}>{date.getDate()}</span>
               </div>
               <div className="flex flex-col gap-2 flex-1">
                 {dayEvents.map(event => (

@@ -15,7 +15,7 @@ export default function Header() {
   return (
     <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b dark:border-white/10 fixed top-0 left-0 right-0 z-50 transition-colors shadow-sm">
       <div className="container mx-auto px-4 h-16 flex justify-between items-center">
-        <Link href="/" className="text-lg md:text-xl font-bold text-indigo-600 dark:text-indigo-400 hover:opacity-80 transition whitespace-nowrap mr-4">
+        <Link href="/" className="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 hover:opacity-80 transition whitespace-nowrap mr-4">
           <span className="md:hidden">就活管理</span>
           <span className="hidden md:inline">就活管理アプリ</span>
         </Link>

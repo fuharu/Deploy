@@ -141,21 +141,18 @@ export default async function Home() {
     <div className="container mx-auto p-4 md:p-8 max-w-7xl space-y-6">
       
       {/* ヒーローエリア */}
-      <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-md shadow-indigo-100 dark:shadow-none border border-indigo-50 dark:border-white/10 relative overflow-hidden group">
+      <section className="bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 shadow-md shadow-indigo-100 dark:shadow-none border border-indigo-50 dark:border-white/10 relative overflow-hidden group">
         
-        {/* 動くBlob背景 (Organic Atmosphere) */}
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-300 dark:bg-indigo-900/40 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-60 animate-blob"></div>
-        <div className="absolute top-0 right-20 -mt-20 w-72 h-72 bg-purple-300 dark:bg-purple-900/40 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-pink-300 dark:bg-pink-900/40 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-60 animate-blob animation-delay-4000"></div>
-
         {/* コンテンツレイヤー */}
         <div className="relative z-10 flex flex-col md:flex-row gap-6 items-center justify-between">
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-xl md:text-3xl font-bold mb-3 text-indigo-950 dark:text-white flex items-center justify-center md:justify-start gap-3">
-              <span className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full border border-indigo-200 dark:border-indigo-700/50">
+              <span className="bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-slate-800 p-2 rounded-full border border-indigo-200/50 dark:border-indigo-700/50 shadow-sm">
                 <GreetingIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
               </span>
-              {greeting}、就活生さん！
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 to-purple-600 dark:from-indigo-300 dark:to-purple-300">
+                {greeting}、就活生さん！
+              </span>
             </h1>
             <p className="text-gray-600 dark:text-slate-300 text-base mb-4 leading-relaxed max-w-xl">
               {urgentEvents.length > 0 
@@ -165,7 +162,7 @@ export default async function Home() {
             
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
               <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 flex items-center gap-3">
-                <div className="bg-indigo-100 dark:bg-indigo-900/50 p-1.5 rounded-lg">
+                <div className="bg-gradient-to-br from-indigo-100 to-blue-50 dark:from-indigo-900/50 dark:to-slate-800 p-1.5 rounded-lg">
                     <Briefcase className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                 </div>
                 <div>
@@ -175,7 +172,7 @@ export default async function Home() {
                 </div>
               </div>
               <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 flex items-center gap-3">
-                <div className="bg-amber-100 dark:bg-amber-900/50 p-1.5 rounded-lg">
+                <div className="bg-gradient-to-br from-amber-100 to-orange-50 dark:from-amber-900/50 dark:to-slate-800 p-1.5 rounded-lg">
                     <Trophy className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div>
@@ -249,32 +246,32 @@ export default async function Home() {
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <Link href="/companies/new" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-indigo-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-indigo-200 dark:border-white/20 hover:border-indigo-400 dark:hover:border-indigo-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
-                      <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                      <div className="bg-indigo-100 dark:bg-indigo-900/40 p-3 rounded-2xl group-hover:bg-indigo-200 dark:group-hover:bg-indigo-900/60 transition-colors">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                      <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/40 dark:to-indigo-800/40 p-3 rounded-2xl group-hover:from-indigo-100 group-hover:to-indigo-200 dark:group-hover:from-indigo-900/60 dark:group-hover:to-indigo-800/60 transition-colors">
                         <Building2 className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                       </div>
                       <span className="font-bold text-sm text-gray-700 dark:text-slate-200 group-hover:text-indigo-700 dark:group-hover:text-white transition-colors">企業追加</span>
                   </Link>
                   
                   <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-blue-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-blue-200 dark:border-white/20 hover:border-blue-400 dark:hover:border-blue-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
-                      <div className="absolute top-0 left-0 w-full h-1 bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                      <div className="bg-blue-100 dark:bg-blue-900/40 p-3 rounded-2xl group-hover:bg-blue-200 dark:group-hover:bg-blue-900/60 transition-colors">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                      <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/40 dark:to-blue-800/40 p-3 rounded-2xl group-hover:from-blue-100 group-hover:to-blue-200 dark:group-hover:from-blue-900/60 dark:group-hover:to-blue-800/60 transition-colors">
                          <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                       </div>
                       <span className="font-bold text-sm text-gray-700 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-white transition-colors">ES管理</span>
                   </Link>
 
                   <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-amber-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-amber-200 dark:border-white/20 hover:border-amber-400 dark:hover:border-amber-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
-                      <div className="absolute top-0 left-0 w-full h-1 bg-amber-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                      <div className="bg-amber-100 dark:bg-amber-900/40 p-3 rounded-2xl group-hover:bg-amber-200 dark:group-hover:bg-amber-900/60 transition-colors">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                      <div className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/40 dark:to-amber-800/40 p-3 rounded-2xl group-hover:from-amber-100 group-hover:to-amber-200 dark:group-hover:from-amber-900/60 dark:group-hover:to-amber-800/60 transition-colors">
                          <Calendar className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                       </div>
                       <span className="font-bold text-sm text-gray-700 dark:text-slate-200 group-hover:text-amber-700 dark:group-hover:text-white transition-colors">カレンダー</span>
                   </Link>
 
                   <Link href="/companies" className="group p-4 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 rounded-2xl shadow-md shadow-rose-100/50 dark:shadow-none hover:shadow-lg dark:hover:shadow-none border border-rose-200 dark:border-white/20 hover:border-rose-400 dark:hover:border-rose-500/50 dark:hover:bg-slate-800/50 transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-3 h-32 relative overflow-hidden">
-                       <div className="absolute top-0 left-0 w-full h-1 bg-rose-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                      <div className="bg-rose-100 dark:bg-rose-900/40 p-3 rounded-2xl group-hover:bg-rose-200 dark:group-hover:bg-rose-900/60 transition-colors">
+                       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-rose-500 to-pink-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                      <div className="bg-gradient-to-br from-rose-50 to-rose-100 dark:from-rose-900/40 dark:to-rose-800/40 p-3 rounded-2xl group-hover:from-rose-100 group-hover:to-rose-200 dark:group-hover:from-rose-900/60 dark:group-hover:to-rose-800/60 transition-colors">
                          <BarChart2 className="w-6 h-6 text-rose-600 dark:text-rose-400" />
                       </div>
                       <span className="font-bold text-sm text-gray-700 dark:text-slate-200 group-hover:text-rose-700 dark:group-hover:text-white transition-colors">分析</span>

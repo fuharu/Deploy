@@ -144,9 +144,9 @@ export default async function Home() {
       <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-md shadow-indigo-100 dark:shadow-none border border-indigo-50 dark:border-white/10 relative overflow-hidden group">
         
         {/* 動くBlob背景 (Organic Atmosphere) */}
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-200 dark:bg-indigo-900/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
-        <div className="absolute top-0 right-20 -mt-20 w-72 h-72 bg-purple-200 dark:bg-purple-900/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-pink-200 dark:bg-pink-900/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-300 dark:bg-indigo-900/40 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-60 animate-blob"></div>
+        <div className="absolute top-0 right-20 -mt-20 w-72 h-72 bg-purple-300 dark:bg-purple-900/40 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-32 left-20 w-72 h-72 bg-pink-300 dark:bg-pink-900/40 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-60 animate-blob animation-delay-4000"></div>
 
         {/* コンテンツレイヤー */}
         <div className="relative z-10 flex flex-col md:flex-row gap-6 items-center justify-between">

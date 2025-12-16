@@ -3,7 +3,7 @@ FastAPIアプリケーションのメインエントリーポイント
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from .routers import companies
 # エンドポイントのインポート
 # from .routers import (
 #     search, # 検索機能
@@ -61,7 +61,7 @@ async def startup_event():
 
 # # はやと担当
 # # 企業管理、イベント/カレンダー、ES管理
-# app.include_router(companies.router)
+app.include_router(companies.router)
 # app.include_router(events.router)
 # app.include_router(es_entries.router)
 

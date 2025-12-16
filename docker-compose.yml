@@ -31,6 +31,9 @@ services:
       - SUPABASE_KEY=${SUPABASE_KEY}
       - DATABASE_URL=${DATABASE_URL}
       - SECRET_KEY=${SECRET_KEY}
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 volumes:

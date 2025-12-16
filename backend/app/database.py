@@ -12,5 +12,5 @@ def get_supabase_client() -> Client:
     # supabaseをアプリ全体で使えるように返す
     return create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Supabaseクライアントを取得,DB接続失敗しても、アプリ全体は動き続けるようにする
+# Supabaseクライアントを取得
 supabase = get_supabase_client() if SUPABASE_URL and SUPABASE_KEY else None

@@ -1,164 +1,115 @@
--- Enable UUID extension
-create extension if not exists "uuid-ossp";
-
--- 4.1 Users (Managed by Supabase Auth, but we can add profile table if needed)
--- For this app, we might want to store additional user profile info in a separate table or just use metadata.
--- Let's create a profiles table that links to auth.users
-create table public.profiles (
-  id uuid references auth.users not null primary key,
-  email text,
-  nickname text,
-  university text,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+-- ---------------------------------
+-- 1. Users テーブル
+-- ---------------------------------
+CREATE TABLE Users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- UUIDを主キーとし、デフォルトで自動生成
+    email VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    university VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Enable RLS
-alter table public.profiles enable row level security;
-
--- Create a trigger to automatically create a profile entry when a new user signs up via Supabase Auth.
-create function public.handle_new_user() 
-returns trigger as $$
-begin
-  insert into public.profiles (id, email)
-  values (new.id, new.email);
-  return new;
-end;
-$$ language plpgsql security definer;
-
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
-
-
--- 4.2 Companies (企業)
-create type company_status as enum ('Interested', 'Entry', 'ES_Submit', 'Interview', 'Offer', 'Rejected');
-
-create table public.companies (
-  id uuid default uuid_generate_v4() primary key,
-  user_id uuid references auth.users not null,
-  name text not null,
-  url text,
-  login_id text,
-  login_password_encrypted text, -- Backend側で暗号化して保存
-  status company_status default 'Interested',
-  motivation_level int check (motivation_level >= 1 and motivation_level <= 5),
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+-- ---------------------------------
+-- 2. Companies テーブル
+-- ---------------------------------
+CREATE TABLE Companies (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL UNIQUE, -- unique制約
+    url VARCHAR(255),
+    address VARCHAR(255),
+    industry VARCHAR(255),
+    updated_at TIMESTAMP WITH TIME ZONE
 );
 
-alter table public.companies enable row level security;
-
-create policy "Users can view their own companies"
-  on public.companies for select
-  using (auth.uid() = user_id);
-
-create policy "Users can insert their own companies"
-  on public.companies for insert
-  with check (auth.uid() = user_id);
-
-create policy "Users can update their own companies"
-  on public.companies for update
-  using (auth.uid() = user_id);
-
-create policy "Users can delete their own companies"
-  on public.companies for delete
-  using (auth.uid() = user_id);
-
-
--- 4.3 Events (イベント)
-create type event_type as enum ('Interview', 'Deadline', 'Seminar', 'Other');
-
-create table public.events (
-  id uuid default uuid_generate_v4() primary key,
-  user_id uuid references auth.users not null,
-  company_id uuid references public.companies on delete cascade, -- 企業削除時にイベントも削除するかは要件次第だが、一旦Cascade
-  title text not null,
-  type event_type default 'Other',
-  start_time timestamp with time zone not null,
-  end_time timestamp with time zone not null,
-  location text,
-  google_calendar_event_id text,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+-- ---------------------------------
+-- 3. UserCompanySelections テーブル
+-- ---------------------------------
+CREATE TABLE UserCompanySelections (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES Companies(id), -- 外部キー
+    user_id UUID NOT NULL REFERENCES Users(id),       -- 外部キー
+    
+    status VARCHAR(50) NOT NULL, -- interested/entry/.../rejected
+    motivation_level INTEGER,    -- 1-5
+    mypage_url VARCHAR(255),
+    login_id VARCHAR(255),
+    login_mailaddress VARCHAR(255),
+    encrypted_password TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE,
+    
+    -- 複合ユニークインデックス
+    UNIQUE (company_id, user_id)
 );
 
-alter table public.events enable row level security;
-
-create policy "Users can view their own events"
-  on public.events for select
-  using (auth.uid() = user_id);
-
-create policy "Users can insert their own events"
-  on public.events for insert
-  with check (auth.uid() = user_id);
-
-create policy "Users can update their own events"
-  on public.events for update
-  using (auth.uid() = user_id);
-
-create policy "Users can delete their own events"
-  on public.events for delete
-  using (auth.uid() = user_id);
-
-
--- 4.4 ES_Entries (エントリーシート)
-create type es_status as enum ('Draft', 'Completed');
-
-create table public.es_entries (
-  id uuid default uuid_generate_v4() primary key,
-  user_id uuid references auth.users not null, -- RLSのためにuser_idも持たせる
-  company_id uuid references public.companies on delete cascade,
-  question text not null,
-  answer text,
-  max_chars int,
-  status es_status default 'Draft',
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+-- ---------------------------------
+-- 4. Events テーブル
+-- ---------------------------------
+CREATE TABLE Events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID REFERENCES Companies(id), -- 外部キー (NULL可)
+    title VARCHAR(255) NOT NULL,
+    type VARCHAR(50) NOT NULL, -- interview/seminar/deadline/other
+    start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    end_time TIMESTAMP WITH TIME ZONE,
+    location VARCHAR(255),
+    description TEXT
 );
 
-alter table public.es_entries enable row level security;
-
-create policy "Users can view their own es entries"
-  on public.es_entries for select
-  using (auth.uid() = user_id);
-
-create policy "Users can manage their own es entries"
-  on public.es_entries for all
-  using (auth.uid() = user_id);
-
-
--- 4.5 Reflections (振り返り)
-create table public.reflections (
-  id uuid default uuid_generate_v4() primary key,
-  user_id uuid references auth.users not null,
-  event_id uuid references public.events on delete cascade unique, -- One-to-One
-  content text,
-  bad_points text,
-  next_action text,
-  score int,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+-- ---------------------------------
+-- 5. UserEvents テーブル (中間テーブル)
+-- ---------------------------------
+CREATE TABLE UserEvents (
+    event_id UUID NOT NULL REFERENCES Events(id),
+    user_id UUID NOT NULL REFERENCES Users(id),
+    
+    status VARCHAR(50) NOT NULL, -- entry/joined/canceled
+    
+    -- 複合主キー
+    PRIMARY KEY (event_id, user_id) 
 );
 
-alter table public.reflections enable row level security;
-
-create policy "Users can manage their own reflections"
-  on public.reflections for all
-  using (auth.uid() = user_id);
-
-
--- 4.6 Tasks (Todo)
-create table public.tasks (
-  id uuid default uuid_generate_v4() primary key,
-  user_id uuid references auth.users not null,
-  company_id uuid references public.companies on delete set null, -- 企業が消えてもタスクは残す（またはCascade）
-  title text not null,
-  due_date timestamp with time zone,
-  is_completed boolean default false,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+-- ---------------------------------
+-- 6. reflections テーブル (振り返り)
+-- ---------------------------------
+CREATE TABLE reflections (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    -- 外部キーかつユニーク制約により、Eventsテーブルと1対1の関係を構築
+    event_id UUID NOT NULL UNIQUE REFERENCES Events(id), 
+    
+    content TEXT,
+    good_points TEXT,
+    bad_points TEXT,
+    self_score INTEGER, -- 1-5
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-alter table public.tasks enable row level security;
+-- ---------------------------------
+-- 7. es_entries テーブル (ES提出)
+-- ---------------------------------
+CREATE TABLE es_entries (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES Companies(id),
+    user_id UUID NOT NULL REFERENCES Users(id),
+    content TEXT,
+    file_url VARCHAR(255),
+    status VARCHAR(50), -- draft/completed
+    submitted_at DATE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE
+);
 
-create policy "Users can manage their own tasks"
-  on public.tasks for all
-  using (auth.uid() = user_id);
-
+-- ---------------------------------
+-- 8. tasks テーブル (Todoリスト)
+-- ---------------------------------
+CREATE TABLE tasks (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES Users(id),
+    company_id UUID REFERENCES Companies(id), -- 外部キー (NULL可)
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    due_date DATE,
+    is_completed BOOLEAN,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE
+);

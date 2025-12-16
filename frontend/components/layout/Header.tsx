@@ -3,12 +3,13 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import ThemeToggle from './ThemeToggle'
+import NotificationMenu from './NotificationMenu'
 
 export default function Header() {
   const pathname = usePathname()
 
   // ログインページやエラーページではヘッダーを表示しない
-  if (pathname === '/login' || pathname === '/error') {
+  if (pathname === '/login' || pathname === '/signup' || pathname === '/error') {
     return null
   }
 
@@ -36,6 +37,7 @@ export default function Header() {
         </nav>
 
         <div className="flex gap-2 md:gap-4 items-center ml-4 shrink-0">
+           <NotificationMenu />
            <ThemeToggle />
            <form action="/auth/signout" method="post">
              <button className="text-xs md:text-sm text-gray-500 hover:text-red-500 transition whitespace-nowrap">

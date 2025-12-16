@@ -22,7 +22,7 @@ import {
   Sunrise
 } from "lucide-react";
 
-import WeeklyCalendar from "@/components/WeeklyCalendar";
+import WeeklyCalendar from "@/components/features/dashboard/WeeklyCalendar";
 
 const GOAL_COMPANIES = 30;
 

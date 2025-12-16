@@ -4,11 +4,11 @@ import { redirect, notFound } from 'next/navigation'
 import { deleteCompany } from './actions'
 import { Calendar, CheckSquare, Coffee, FileText, Link as LinkIcon, Edit, Trash2 } from 'lucide-react'
 
-import EsList from '@/components/EsList'
-import TodoList from '@/components/TodoList'
-import EventList from '@/components/EventList'
-import CafeSearch from '@/components/CafeSearch'
-import SectionCard from '@/components/SectionCard'
+import EsList from '@/components/features/companies/EsList'
+import TodoList from '@/components/features/companies/TodoList'
+import EventList from '@/components/features/companies/EventList'
+import CafeSearch from '@/components/features/cafe/CafeSearch'
+import SectionCard from '@/components/shared/SectionCard'
 
 export default async function CompanyDetailPage({ params }: { params: { id: string } }) {
   const supabase = await createClient()

@@ -1,3 +1,6 @@
+/* 日本語フォント (M PLUS Rounded 1c) を直接読み込み */
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&display=swap');
+
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
@@ -7,7 +10,8 @@
 @theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-rounded: var(--font-m-plus-rounded), var(--font-geist-sans), sans-serif;
+  /* フォント名を直接指定 */
+  --font-rounded: "M PLUS Rounded 1c", var(--font-geist-sans), sans-serif;
   
   --animate-blob: blob 7s infinite;
   

@@ -11,7 +11,7 @@ from ..database import get_supabase_client
 router = APIRouter()
 
 @router.get("/campanies", response_model = List[Dict[str, Any]])
-def read_all_companies_from_supabase(
+def read_all_companies(
     # get_supabase 関数を依存性として注入
     db: Client = Depends(get_supabase_client)
   ):

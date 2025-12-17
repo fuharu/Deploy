@@ -5,7 +5,8 @@
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from datetime import datetime
-from ..models.event import Event, EventCreate, EventUpdate
+from uuid import UUID
+from ..models.models import Event, EventCreate
 from ..database import supabase
 
 router = APIRouter(prefix="/api/events", tags=["events"])
@@ -13,7 +14,7 @@ router = APIRouter(prefix="/api/events", tags=["events"])
 @router.get("/", response_model=List[Event])
 async def get_events(
     user_id: str = "test-user",
-    company_id: Optional[int] = None,
+    company_id: Optional[UUID] = None,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None
 ):
@@ -55,7 +56,7 @@ async def create_event(event: EventCreate, user_id: str = "test-user"):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/{event_id}", response_model=Event)
-async def get_event(event_id: int, user_id: str = "test-user"):
+async def get_event(event_id: UUID, user_id: str = "test-user"):
     """
     特定のイベントを取得
     """
@@ -71,7 +72,7 @@ async def get_event(event_id: int, user_id: str = "test-user"):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/{event_id}", response_model=Event)
-async def update_event(event_id: int, event: EventUpdate, user_id: str = "test-user"):
+async def update_event(event_id: UUID, event: EventCreate, user_id: str = "test-user"):
     """
     イベントを更新
     """
@@ -88,7 +89,7 @@ async def update_event(event_id: int, event: EventUpdate, user_id: str = "test-u
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/{event_id}")
-async def delete_event(event_id: int, user_id: str = "test-user"):
+async def delete_event(event_id: UUID, user_id: str = "test-user"):
     """
     イベントを削除
     """

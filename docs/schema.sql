@@ -98,18 +98,3 @@ CREATE TABLE es_entries (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE
 );
-
--- ---------------------------------
--- 8. tasks テーブル (Todoリスト)
--- ---------------------------------
-CREATE TABLE tasks (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES Users(id),
-    company_id UUID REFERENCES Companies(id), -- 外部キー (NULL可)
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    due_date DATE,
-    is_completed BOOLEAN,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE
-);

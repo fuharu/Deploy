@@ -28,18 +28,14 @@ export default function CafeSearch({ defaultLocation }: { defaultLocation?: stri
   }
 
   return (
-    <div className="bg-white border rounded-lg p-6 shadow-sm">
-      <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-        ☕ 周辺カフェ検索 (作業・時間調整)
-      </h2>
-      
-      <div className="flex gap-2 mb-4">
+    <div className="flex flex-col gap-4">
+      <div className="flex gap-2">
         <input 
             type="text" 
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="場所を入力 (例: 渋谷駅, 東京都千代田区...)"
-            className="border rounded px-3 py-2 flex-1"
+            className="border dark:border-gray-600 rounded px-3 py-2 flex-1 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         />
         <button 
@@ -52,7 +48,7 @@ export default function CafeSearch({ defaultLocation }: { defaultLocation?: stri
       </div>
 
       {searched && places.length === 0 && (
-          <p className="text-gray-500 text-sm text-center py-4">
+          <p className="text-gray-500 dark:text-gray-400 text-sm text-center py-4">
               カフェが見つかりませんでした。場所を変えて試してください。
           </p>
       )}
@@ -60,19 +56,19 @@ export default function CafeSearch({ defaultLocation }: { defaultLocation?: stri
       {places.length > 0 && (
         <div className="flex flex-col gap-3">
             {places.map((place, idx) => (
-                <div key={idx} className="border p-3 rounded hover:bg-orange-50 transition">
+                <div key={idx} className="border dark:border-gray-700 p-3 rounded hover:bg-orange-50 dark:hover:bg-orange-900/20 transition bg-white dark:bg-gray-700/20">
                     <div className="flex justify-between items-start">
-                        <div className="font-bold text-gray-800">{place.name}</div>
+                        <div className="font-bold text-gray-800 dark:text-gray-200">{place.name}</div>
                         {place.rating && (
                             <div className="text-orange-500 text-sm font-bold">
-                                ★ {place.rating} <span className="text-gray-400 font-normal">({place.user_ratings_total})</span>
+                                ★ {place.rating} <span className="text-gray-400 dark:text-gray-500 font-normal">({place.user_ratings_total})</span>
                             </div>
                         )}
                     </div>
-                    <div className="text-sm text-gray-600 mb-1">{place.address}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">{place.address}</div>
                     <div className="flex gap-2 text-xs">
                         {place.open_now !== null && (
-                            <span className={`px-2 py-0.5 rounded ${place.open_now ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            <span className={`px-2 py-0.5 rounded ${place.open_now ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'}`}>
                                 {place.open_now ? '営業中' : '営業時間外'}
                             </span>
                         )}
@@ -80,7 +76,7 @@ export default function CafeSearch({ defaultLocation }: { defaultLocation?: stri
                             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name + ' ' + place.address)}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="text-blue-500 hover:underline"
+                            className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:underline"
                         >
                             Google Mapで見る
                         </a>

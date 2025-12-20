@@ -13,6 +13,9 @@ services:
     environment:
       - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - MAIL_FROM=${MAIL_FROM}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
     depends_on:
       - backend
     command: npm run dev
@@ -31,10 +34,6 @@ services:
       - SUPABASE_KEY=${SUPABASE_KEY}
       - DATABASE_URL=${DATABASE_URL}
       - SECRET_KEY=${SECRET_KEY}
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 volumes:
   node_modules:

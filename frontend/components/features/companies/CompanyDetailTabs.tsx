@@ -2,13 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Calendar, CheckSquare, FileText, Coffee, MessageSquare } from 'lucide-react'
+import { Calendar, CheckSquare, FileText, MessageSquare } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import EventList from './EventList'
 import TodoList from './TodoList'
 import EsList from './EsList'
 import ReflectionList from './ReflectionList'
-import CafeSearch from '@/components/features/cafe/CafeSearch'
 
 type Props = {
   companyId: string
@@ -34,7 +33,6 @@ export default function CompanyDetailTabs({ companyId, events, tasks, esList, de
     { id: 'reflections', label: '振り返りログ', icon: MessageSquare, color: 'text-blue-500' },
     { id: 'tasks', label: 'タスク (Todo)', icon: CheckSquare, color: 'text-emerald-500' },
     { id: 'es', label: 'ES・提出書類', icon: FileText, color: 'text-violet-500' },
-    { id: 'cafe', label: '周辺カフェ', icon: Coffee, color: 'text-orange-500' },
   ]
 
   return (
@@ -89,11 +87,6 @@ export default function CompanyDetailTabs({ companyId, events, tasks, esList, de
                 {activeTab === 'es' && (
                 <div className="max-w-3xl mx-auto">
                     <EsList companyId={companyId} initialEsList={esList} />
-                </div>
-                )}
-                {activeTab === 'cafe' && (
-                <div className="max-w-3xl mx-auto">
-                    <CafeSearch defaultLocation={defaultLocation} />
                 </div>
                 )}
             </motion.div>

@@ -45,7 +45,7 @@ export default function EsList({
                     <input
                         name="file_url"
                         type="url"
-                        placeholder="ファイルURL (任意)"
+                        placeholder="ファイルURL（Google DriveやDropboxにアップロードして共有リンクを貼り付けてください）"
                         className="border dark:border-gray-600 rounded px-3 py-2 flex-1 text-sm dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                     />
                     <select
@@ -114,7 +114,7 @@ function EsItem({ es, companyId }: { es: ES, companyId: string }) {
                     type="url"
                     value={fileUrl}
                     onChange={(e) => setFileUrl(e.target.value)}
-                    placeholder="ファイルURL (任意)"
+                    placeholder="ファイルURL（Google DriveやDropboxにアップロードして共有リンクを貼り付けてください）"
                     className="border dark:border-gray-600 rounded px-3 py-2 w-full text-sm dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 />
 
@@ -193,4 +193,3 @@ function EsItem({ es, companyId }: { es: ES, companyId: string }) {
         </div>
     )
 }
-

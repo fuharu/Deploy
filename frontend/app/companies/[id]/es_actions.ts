@@ -14,13 +14,18 @@ export async function addESEntry(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  await supabase.from('es_entries').insert({
+  const { error } = await supabase.from('es_entries').insert({
     user_id: user.id,
     company_id,
     content,
     file_url,
     status,
   })
+
+  if (error) {
+    console.error('ES creation error:', error)
+    throw new Error('ESの作成に失敗しました')
+  }
 
   revalidatePath(`/companies/${company_id}`)
 }
@@ -38,13 +43,18 @@ export async function updateESEntry(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  await supabase.from('es_entries').update({
+  const { error } = await supabase.from('es_entries').update({
     content,
     file_url,
     status,
     submitted_at: submitted_at ? new Date(submitted_at).toISOString() : null,
     updated_at: new Date().toISOString()
-  }).eq('id', id)
+  }).eq('id', id).eq('user_id', user.id)
+
+  if (error) {
+    console.error('ES update error:', error)
+    throw new Error('ESの更新に失敗しました')
+  }
 
   revalidatePath(`/companies/${company_id}`)
 }
@@ -57,4 +67,3 @@ export async function deleteESEntry(formData: FormData) {
   await supabase.from('es_entries').delete().eq('id', id)
   revalidatePath(`/companies/${company_id}`)
 }
-

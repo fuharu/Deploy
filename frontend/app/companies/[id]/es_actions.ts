@@ -5,20 +5,21 @@ import { revalidatePath } from 'next/cache'
 
 export async function addESEntry(formData: FormData) {
   const supabase = await createClient()
-  
+
   const company_id = formData.get('company_id') as string
-  const question = formData.get('question') as string
-  const max_chars = formData.get('max_chars') ? parseInt(formData.get('max_chars') as string) : null
-  
+  const content = formData.get('content') as string
+  const file_url = formData.get('file_url') as string || null
+  const status = formData.get('status') as string || 'Draft'
+
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
   await supabase.from('es_entries').insert({
     user_id: user.id,
     company_id,
-    question,
-    max_chars,
-    status: 'Draft'
+    content,
+    file_url,
+    status,
   })
 
   revalidatePath(`/companies/${company_id}`)
@@ -29,15 +30,19 @@ export async function updateESEntry(formData: FormData) {
 
   const id = formData.get('id') as string
   const company_id = formData.get('company_id') as string
-  const answer = formData.get('answer') as string
-  const status = formData.get('status') as string // 'Draft' or 'Completed'
+  const content = formData.get('content') as string
+  const file_url = formData.get('file_url') as string || null
+  const status = formData.get('status') as string
+  const submitted_at = formData.get('submitted_at') as string || null
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
   await supabase.from('es_entries').update({
-    answer,
+    content,
+    file_url,
     status,
+    submitted_at: submitted_at ? new Date(submitted_at).toISOString() : null,
     updated_at: new Date().toISOString()
   }).eq('id', id)
 

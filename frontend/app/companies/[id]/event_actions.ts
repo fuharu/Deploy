@@ -11,14 +11,14 @@ export async function addEvent(formData: FormData) {
   const type = formData.get('type') as string
   const start_time = formData.get('start_time') as string
   const end_time = formData.get('end_time') as string
-  const location = formData.get('location') as string
+  const location = formData.get('location') as string || null
+  const description = formData.get('description') as string || null
 
   // end_timeがない場合はstart_time + 1時間とする等の処理
   const final_end_time = end_time || new Date(new Date(start_time).getTime() + 60*60*1000).toISOString()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
-
   // 1. eventsテーブルにイベントを作成
   const { data: eventData, error: eventError } = await supabase.from('events').insert({
     company_id: company_id || null,

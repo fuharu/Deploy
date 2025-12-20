@@ -58,6 +58,6 @@ export async function signup(formData: FormData) {
     }
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/')
+  // メール確認画面にリダイレクト
+  redirect('/auth/verify-email')
 }

@@ -2,15 +2,19 @@ import { createClient } from '@/utils/supabase/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import CompanySearch from '@/components/features/companies/CompanySearch'
 
 export default async function CompaniesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string; q?: string; status?: string }>
 }) {
   const supabase = await createClient()
   const resolvedSearchParams = await searchParams
   const page = Number(resolvedSearchParams.page) || 1
+  const query = resolvedSearchParams.q || ''
+  const status = resolvedSearchParams.status || 'all'
+  
   const perPage = 12
   const from = (page - 1) * perPage
   const to = from + perPage - 1
@@ -23,11 +27,24 @@ export default async function CompaniesPage({
     redirect('/login')
   }
 
-  const { data: companies, count, error } = await supabase
-    .from('companies')
-    .select('*', { count: 'exact' })
+  // クエリの構築
+  let queryBuilder = supabase
+    .from('usercompanyselections')
+    .select('*, companies!inner(*)', { count: 'exact' })
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
-    .range(from, to)
+
+  // 検索条件の適用
+  if (query) {
+    queryBuilder = queryBuilder.ilike('companies.name', `%${query}%`)
+  }
+
+  if (status && status !== 'all') {
+    queryBuilder = queryBuilder.eq('status', status)
+  }
+
+  // ページネーションの適用と実行
+  const { data: selections, count, error } = await queryBuilder.range(from, to)
 
   if (error) {
       console.error('Supabase Error:', JSON.stringify(error, null, 2))
@@ -35,6 +52,16 @@ export default async function CompaniesPage({
   }
 
   const totalPages = Math.ceil((count || 0) / perPage)
+
+  // ページネーションリンク用のクエリパラメータ生成関数
+  const getPageLink = (p: number) => {
+      const params = new URLSearchParams()
+      if (p > 1) params.set('page', p.toString())
+      if (query) params.set('q', query)
+      if (status && status !== 'all') params.set('status', status)
+      const str = params.toString()
+      return `/companies${str ? `?${str}` : ''}`
+  }
 
   return (
     <div className="container mx-auto p-8">
@@ -48,10 +75,19 @@ export default async function CompaniesPage({
         </Link>
       </div>
 
-      {companies && companies.length > 0 ? (
+      <CompanySearch />
+
+      {selections && selections.length > 0 ? (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {companies.map((company) => {
+            {selections.map((selection: any) => {
+               const company = {
+                   ...selection.companies,
+                   id: selection.company_id,
+                   status: selection.status,
+                   motivation_level: selection.motivation_level
+               }
+
                const getStatusBadge = (status: string) => {
                   const styles = {
                       Interested: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800',
@@ -112,7 +148,7 @@ export default async function CompaniesPage({
             <div className="flex justify-center mt-10 gap-2 items-center">
               {page > 1 ? (
                 <Link 
-                  href={`/companies?page=${page - 1}`} 
+                  href={getPageLink(page - 1)} 
                   className="p-2 border dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition text-gray-600 dark:text-gray-300"
                 >
                   <ChevronLeft className="w-5 h-5" />
@@ -129,7 +165,7 @@ export default async function CompaniesPage({
 
               {page < totalPages ? (
                 <Link 
-                  href={`/companies?page=${page + 1}`} 
+                  href={getPageLink(page + 1)} 
                   className="p-2 border dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition text-gray-600 dark:text-gray-300"
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -144,11 +180,14 @@ export default async function CompaniesPage({
         </>
       ) : (
         <div className="text-center py-12 text-gray-500">
-          登録されている企業はありません。<br/>
-          右上のボタンから追加してください。
+          <p>条件に一致する企業は見つかりませんでした。</p>
+          {(query || (status && status !== 'all')) && (
+            <Link href="/companies" className="text-indigo-600 hover:underline mt-2 inline-block">
+                検索条件をクリア
+            </Link>
+          )}
         </div>
       )}
     </div>
   )
 }
-

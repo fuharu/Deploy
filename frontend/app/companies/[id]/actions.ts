@@ -7,15 +7,21 @@ import { sendEmail } from '@/utils/mail'
 
 export async function deleteCompany(formData: FormData) {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
   const id = formData.get('id') as string
 
+  if (!user) {
+    throw new Error('User not found')
+  }
+
   const { error } = await supabase
-    .from('companies')
+    .from('usercompanyselections')
     .delete()
-    .eq('id', id)
+    .eq('company_id', id)
+    .eq('user_id', user.id)
 
   if (error) {
-    console.error('Error deleting company:', error)
+    console.error('Error deleting company selection:', error)
     throw new Error('Failed to delete company')
   }
 
@@ -28,6 +34,10 @@ export async function updateCompany(formData: FormData) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
+    if (!user) {
+        throw new Error('User not found')
+    }
+
     const id = formData.get('id') as string
     const name = formData.get('name') as string
     const url = formData.get('url') as string
@@ -35,24 +45,38 @@ export async function updateCompany(formData: FormData) {
     const motivation_level = parseInt(formData.get('motivation_level') as string)
 
     // 変更前の状態を取得
-    const { data: oldCompany } = await supabase
-      .from('companies')
+    const { data: oldSelection } = await supabase
+      .from('usercompanyselections')
       .select('status')
-      .eq('id', id)
+      .eq('company_id', id)
+      .eq('user_id', user.id)
       .single()
 
-    const { error } = await supabase
+    // 企業情報の更新 (name, url)
+    const { error: companyError } = await supabase
       .from('companies')
-      .update({ name, url, status, motivation_level })
+      .update({ name, url })
       .eq('id', id)
     
+    if (companyError) {
+        console.error('Error updating company info:', companyError)
+        // 続行する（選択情報の更新は試みる）
+    }
+
+    // 選択情報の更新 (status, motivation_level)
+    const { error } = await supabase
+      .from('usercompanyselections')
+      .update({ status, motivation_level })
+      .eq('company_id', id)
+      .eq('user_id', user.id)
+    
     if (error) {
-        console.error('Error updating company:', error)
+        console.error('Error updating company selection:', error)
         throw new Error('Failed to update company')
     }
 
     // ステータス変更通知
-    if (oldCompany && oldCompany.status !== status && user?.email) {
+    if (oldSelection && oldSelection.status !== status && user?.email) {
         let subject = '';
         let message = '';
 

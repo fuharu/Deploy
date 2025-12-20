@@ -4,25 +4,25 @@ import { redirect } from "next/navigation";
 import { 
   AlertTriangle, 
   Building2, 
-  Calendar, 
   CheckCircle2, 
   ClipboardList, 
   Clock, 
   FileText, 
   BarChart2, 
   Rocket, 
-  Plus,
   Smile,
   Briefcase,
   Trophy,
   History,
-  PenTool,
   Sun,
   Moon,
-  Sunrise
+  Sunrise,
+  Calendar
 } from "lucide-react";
 
 import WeeklyCalendar from "@/components/features/dashboard/WeeklyCalendar";
+import ActivityChart from "@/components/features/dashboard/ActivityChart";
+import StatusChart from "@/components/features/dashboard/StatusChart";
 
 const GOAL_COMPANIES = 30;
 
@@ -47,25 +47,28 @@ export default async function Home() {
   // 直近のイベント取得（今週の開始日以降を取得してカレンダーに反映させる）
   const { data: upcomingEvents } = await supabase
     .from("events")
-    .select("*, companies(name)")
+    .select("*, companies(name), userevents!inner(user_id)")
+    .eq("userevents.user_id", user.id)
     .gte("start_time", sunday.toISOString())
     .order("start_time", { ascending: true })
-    .limit(50); // 数を少し増やす
+    .limit(50);
 
   // 未完了タスク取得
   const { data: pendingTasks } = await supabase
     .from("tasks")
     .select("*, companies(name)")
+    .eq("user_id", user.id) // 追加: 明示的にユーザーIDで絞り込み
     .eq("is_completed", false)
     .order("due_date", { ascending: true })
     .limit(5);
 
   // 企業ステータスの集計
-  const { data: companies } = await supabase
-    .from("companies")
-    .select("status");
+  const { data: selections } = await supabase
+    .from("usercompanyselections")
+    .select("status")
+    .eq("user_id", user.id);
     
-  const totalCompanies = companies?.length || 0;
+  const totalCompanies = selections?.length || 0;
   
   // ステータス集計
   const statusCounts: Record<string, number> = {
@@ -77,9 +80,9 @@ export default async function Home() {
     Rejected: 0,
   };
 
-  companies?.forEach((c) => {
-    if (c.status in statusCounts) {
-      statusCounts[c.status]++;
+  selections?.forEach((s) => {
+    if (s.status in statusCounts) {
+      statusCounts[s.status]++;
     }
   });
 
@@ -107,31 +110,34 @@ export default async function Home() {
     GreetingIcon = Moon;
   }
 
-  // 円グラフ用のデータ計算 (目標達成度)
-  const percentage = Math.min(totalCompanies / GOAL_COMPANIES, 1);
-  const endAngle = percentage * 360;
+  // Activity Chart Data (Last 7 days)
+  const last7Days = [...Array(7)].map((_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() - (6 - i))
+    return d.toISOString().split('T')[0]
+  })
 
-  // SVG円グラフのパス生成ヘルパー
-  const getPiePath = (startAngle: number, endAngle: number) => {
-    // 0度の場合は描画しない
-    if (startAngle === endAngle) return "";
-    
-    // 360度の場合は完全な円を描画
-    if (endAngle - startAngle >= 360) {
-      return `M 50 0 A 50 50 0 1 1 50 100 A 50 50 0 1 1 50 0 Z`;
+  const startDate = last7Days[0]
+  const { data: weekEvents } = await supabase.from('events').select('start_time').gte('start_time', startDate)
+  const { data: weekEs } = await supabase.from('es_entries').select('submitted_at').gte('submitted_at', startDate)
+
+  const activityData = last7Days.map(date => {
+    const eventCount = weekEvents?.filter(e => e.start_time.startsWith(date)).length || 0
+    const esCount = weekEs?.filter(e => e.submitted_at?.startsWith(date)).length || 0
+    return {
+        date: date.slice(5).replace('-', '/'), // MM/DD
+        events: eventCount,
+        es: esCount
     }
+  })
 
-    const x1 = 50 + 50 * Math.cos(Math.PI * (startAngle - 90) / 180);
-    const y1 = 50 + 50 * Math.sin(Math.PI * (startAngle - 90) / 180);
-    const x2 = 50 + 50 * Math.cos(Math.PI * (endAngle - 90) / 180);
-    const y2 = 50 + 50 * Math.sin(Math.PI * (endAngle - 90) / 180);
-    const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
-    
-    // 中心点(50,50)を含まないドーナツ型にするため、内側のパスは描かない（strokeで描画するため）
-    // 今回はpathで扇形を描くのではなく、circleのstroke-dasharrayを使う方式に変更したほうが簡単だが、
-    // 既存のgetPiePathを流用して扇形（パイ）を描く
-    return `M 50 50 L ${x1} ${y1} A 50 50 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
-  };
+  // Status Chart Data
+  const statusChartData = [
+    { name: 'エントリー', value: statusCounts.Entry, color: '#6366f1' },
+    { name: '面接', value: statusCounts.Interview, color: '#f59e0b' },
+    { name: '内定', value: statusCounts.Offer, color: '#10b981' },
+    { name: 'その他', value: (statusCounts.Interested + statusCounts.ES_Submit + statusCounts.Rejected), color: '#9ca3af' }
+  ].filter(d => d.value > 0)
 
   return (
     <div className="container mx-auto p-4 md:p-8 max-w-7xl space-y-6">
@@ -139,7 +145,6 @@ export default async function Home() {
       {/* ヒーローエリア */}
       <section className="bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl p-6 shadow-md shadow-indigo-100 dark:shadow-none border border-indigo-50 dark:border-white/10 relative overflow-hidden group">
         
-        {/* コンテンツレイヤー */}
         <div className="relative z-10 flex flex-col md:flex-row gap-6 items-center justify-between">
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-xl md:text-3xl font-bold mb-3 text-indigo-950 dark:text-white flex items-center justify-center md:justify-start gap-3">
@@ -149,7 +154,7 @@ export default async function Home() {
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 to-purple-600 dark:from-indigo-300 dark:to-purple-300">
                 {greeting}、就活生さん！
               </span>
-            </h1>
+          </h1>
             <p className="text-gray-600 dark:text-slate-300 text-base mb-4 leading-relaxed max-w-xl">
               {urgentEvents.length > 0 
                 ? `明日にかけて${urgentEvents.length}件の予定があります。準備は万端ですか？` 
@@ -180,37 +185,14 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* 進捗グラフ (目標達成度プログレスリング) */}
-          <div className="flex-shrink-0 w-48 h-48 relative flex items-center justify-center bg-white/60 dark:bg-slate-800/40 rounded-full backdrop-blur-sm shadow-inner border border-white/50 dark:border-white/10">
-             <svg viewBox="0 0 100 100" className="w-full h-full rotate-[-90deg]">
-               {/* ベースリング (未達成部分) */}
-               <circle cx="50" cy="50" r="40" className="text-gray-100 dark:text-slate-700" strokeWidth="8" stroke="currentColor" fill="none" />
-               
-               {/* 進捗リング (達成部分) */}
-               {totalCompanies > 0 && (
-                 <circle 
-                   cx="50" 
-                   cy="50" 
-                   r="40" 
-                   className="text-indigo-500 dark:text-indigo-400 drop-shadow-md" 
-                   strokeWidth="8" 
-                   stroke="currentColor" 
-                   fill="none"
-                   strokeDasharray={`${2 * Math.PI * 40 * percentage} ${2 * Math.PI * 40 * (1 - percentage)}`}
-                   strokeLinecap="round"
-                 />
-               )}
-             </svg>
-             
-             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-5xl font-bold text-gray-800 dark:text-white font-sans tracking-tight">{totalCompanies}</span>
-                <span className="text-xs text-gray-400 dark:text-slate-500 font-bold uppercase tracking-wider mt-1">/ {GOAL_COMPANIES} GOAL</span>
-             </div>
+          {/* 進捗グラフ (Recharts Pie Chart) */}
+          <div className="flex-shrink-0 flex items-center justify-center bg-white/60 dark:bg-slate-800/40 rounded-full backdrop-blur-sm shadow-inner border border-white/50 dark:border-white/10 p-2">
+             <StatusChart data={statusChartData} total={totalCompanies} goal={GOAL_COMPANIES} />
           </div>
         </div>
       </section>
 
-      {/* リマインダーアラート (緊急時のみ) */}
+      {/* リマインダーアラート */}
       {urgentEvents.length > 0 && (
         <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm animate-pulse-slow">
           <div className="flex items-start">
@@ -231,11 +213,10 @@ export default async function Home() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* 左カラム: カレンダー & タイムライン */}
+        {/* 左カラム */}
         <div className="lg:col-span-2 space-y-8">
            <WeeklyCalendar events={upcomingEvents || []} />
            
-           {/* クイックアクセス (白ベース、メインカラー統一) */}
            <section>
               <h2 className="text-xl font-bold mb-4 dark:text-white flex items-center gap-2 text-indigo-950">
                  <Rocket className="w-6 h-6 text-indigo-600 dark:text-indigo-400" /> クイックアクセス
@@ -276,9 +257,8 @@ export default async function Home() {
            </section>
         </div>
 
-        {/* 右カラム: タスク & 最近の活動 */}
+        {/* 右カラム */}
         <div className="lg:col-span-1 space-y-8">
-            {/* 未完了タスク */}
             <section className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-white/10 shadow-md shadow-indigo-50 dark:shadow-none relative overflow-hidden group hover:shadow-lg dark:hover:shadow-none transition-all hover:-translate-y-1">
               <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
                  <ClipboardList className="w-32 h-32 text-indigo-900" />
@@ -334,28 +314,12 @@ export default async function Home() {
               </div>
             </section>
             
-            {/* 最近の活動 */}
+            {/* 最近の活動 (グラフ) */}
             <section className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-white/10 shadow-md shadow-gray-100 dark:shadow-none hover:shadow-lg dark:hover:shadow-none transition-all">
                  <h2 className="text-lg font-bold mb-4 dark:text-white flex items-center gap-2 text-indigo-950">
-                    <History className="w-5 h-5 text-gray-400" /> 最近の活動履歴
+                    <History className="w-5 h-5 text-gray-400" /> 今週の活動量
                 </h2>
-                <div className="relative pl-4 border-l-2 border-gray-100 dark:border-white/10 space-y-8 py-2">
-                    <div className="relative group">
-                        <div className="absolute -left-[21px] top-0 w-3 h-3 rounded-full bg-indigo-500 ring-4 ring-white dark:ring-slate-900 group-hover:scale-125 transition-transform shadow-sm"></div>
-                        <p className="text-xs text-gray-400 font-mono mb-0.5">Today 10:30</p>
-                        <p className="text-sm font-medium dark:text-gray-200 text-gray-800 group-hover:text-indigo-600 transition-colors">株式会社Aの面接日程を登録しました</p>
-                    </div>
-                    <div className="relative group">
-                        <div className="absolute -left-[21px] top-0 w-3 h-3 rounded-full bg-gray-300 dark:bg-slate-600 ring-4 ring-white dark:ring-slate-900 group-hover:scale-125 transition-transform shadow-sm"></div>
-                        <p className="text-xs text-gray-400 font-mono mb-0.5">Yesterday 15:00</p>
-                        <p className="text-sm font-medium dark:text-gray-200 text-gray-800 group-hover:text-indigo-600 transition-colors">株式会社Bのエントリーシートを作成しました</p>
-                    </div>
-                     <div className="relative group">
-                        <div className="absolute -left-[21px] top-0 w-3 h-3 rounded-full bg-gray-300 dark:bg-slate-600 ring-4 ring-white dark:ring-slate-900 group-hover:scale-125 transition-transform shadow-sm"></div>
-                        <p className="text-xs text-gray-400 font-mono mb-0.5">2 days ago</p>
-                        <p className="text-sm font-medium dark:text-gray-200 text-gray-800 group-hover:text-indigo-600 transition-colors">新規アカウントを作成しました</p>
-                    </div>
-                </div>
+                <ActivityChart data={activityData} />
             </section>
         </div>
       </div>

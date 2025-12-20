@@ -162,3 +162,20 @@ create policy "Users can manage their own tasks"
   on public.tasks for all
   using (auth.uid() = user_id);
 
+
+-- 4.7 Notifications (通知)
+create table public.notifications (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references auth.users not null,
+  title text not null,
+  content text,
+  link text,
+  is_read boolean default false,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table public.notifications enable row level security;
+
+create policy "Users can manage their own notifications"
+  on public.notifications for all
+  using (auth.uid() = user_id);

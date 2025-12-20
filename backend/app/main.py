@@ -5,9 +5,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # エンドポイントのインポート
+from .routers import reminders  # リマインダー機能
+from .routers import reflections  # 振り返りログ機能
 # from .routers import (
 #     search, # 検索機能
-#     reminders, # リマインダー機能
 #     companies, # 企業管理
 #     events, # イベント/カレンダー管理
 #     tasks, # Todoリスト管理
@@ -57,7 +58,9 @@ async def startup_event():
 # APIエンドポイントをappに組み込む
 # たいが担当
 # リマインダー機能
-# app.include_router(reminders.router)
+app.include_router(reminders.router)
+# 振り返りログ機能
+app.include_router(reflections.router)
 
 # # はやと担当
 # # 企業管理、イベント/カレンダー、ES管理

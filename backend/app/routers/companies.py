@@ -4,7 +4,8 @@
 """
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
-from ..models.company import Company, CompanyCreate, CompanyUpdate
+from uuid import UUID
+from ..models.models import Company, CompanyCreate
 from ..database import supabase
 
 router = APIRouter(prefix="/api/companies", tags=["companies"])
@@ -40,7 +41,7 @@ async def create_company(company: CompanyCreate, user_id: str = "test-user"):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/{company_id}", response_model=Company)
-async def get_company(company_id: int, user_id: str = "test-user"):
+async def get_company(company_id: UUID, user_id: str = "test-user"):
     """
     特定の企業を取得
     """
@@ -56,7 +57,7 @@ async def get_company(company_id: int, user_id: str = "test-user"):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/{company_id}", response_model=Company)
-async def update_company(company_id: int, company: CompanyUpdate, user_id: str = "test-user"):
+async def update_company(company_id: UUID, company: CompanyCreate, user_id: str = "test-user"):
     """
     企業情報を更新
     """
@@ -73,7 +74,7 @@ async def update_company(company_id: int, company: CompanyUpdate, user_id: str =
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/{company_id}")
-async def delete_company(company_id: int, user_id: str = "test-user"):
+async def delete_company(company_id: UUID, user_id: str = "test-user"):
     """
     企業を削除
     """

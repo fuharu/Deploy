@@ -4,13 +4,14 @@ ES（エントリーシート）管理 API ルート
 """
 from fastapi import APIRouter, HTTPException
 from typing import List
-from ..models.es_entry import ESEntry, ESEntryCreate, ESEntryUpdate
+from uuid import UUID
+from ..models.models import ESEntry, ESEntryCreate
 from ..database import supabase
 
 router = APIRouter(prefix="/api/es-entries", tags=["es_entries"])
 
 @router.get("/company/{company_id}", response_model=List[ESEntry])
-async def get_es_entries_by_company(company_id: int, user_id: str = "test-user"):
+async def get_es_entries_by_company(company_id: UUID, user_id: str = "test-user"):
     """
     企業の全ESエントリーを取得
     """
@@ -46,7 +47,7 @@ async def create_es_entry(es_entry: ESEntryCreate, user_id: str = "test-user"):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/{entry_id}", response_model=ESEntry)
-async def update_es_entry(entry_id: int, es_entry: ESEntryUpdate, user_id: str = "test-user"):
+async def update_es_entry(entry_id: UUID, es_entry: ESEntryCreate, user_id: str = "test-user"):
     """
     ESエントリーを更新
     """
@@ -68,7 +69,7 @@ async def update_es_entry(entry_id: int, es_entry: ESEntryUpdate, user_id: str =
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/{entry_id}")
-async def delete_es_entry(entry_id: int, user_id: str = "test-user"):
+async def delete_es_entry(entry_id: UUID, user_id: str = "test-user"):
     """
     ESエントリーを削除
     """

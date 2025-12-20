@@ -60,6 +60,7 @@ export default async function Home() {
     .order("due_date", { ascending: true })
     .limit(5);
 
+
   // 企業ステータスの集計
   const { data: selections } = await supabase
     .from("usercompanyselections")

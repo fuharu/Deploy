@@ -34,9 +34,6 @@ services:
       - SUPABASE_KEY=${SUPABASE_KEY}
       - DATABASE_URL=${DATABASE_URL}
       - SECRET_KEY=${SECRET_KEY}
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-      - SEARCH_ENGINE_ID=${SEARCH_ENGINE_ID}
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 volumes:
   node_modules:

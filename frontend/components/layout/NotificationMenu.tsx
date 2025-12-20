@@ -1,21 +1,25 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Bell, Check, X } from 'lucide-react'
+import { Bell, Check, X, AlertTriangle, Clock } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
 
-type Notification = {
+type Reminder = {
     id: string
-    title: string
-    content: string | null
-    link: string | null
-    is_read: boolean
+    type: string
+    company_id: string
+    company_name: string
+    message: string
+    priority: 'high' | 'medium' | 'low'
+    days_remaining?: number
+    days_passed?: number
+    deadline?: string
     created_at: string
 }
 
 export default function NotificationMenu() {
-    const [notifications, setNotifications] = useState<Notification[]>([])
+    const [reminders, setReminders] = useState<Reminder[]>([])
     const [isOpen, setIsOpen] = useState(false)
     const [unreadCount, setUnreadCount] = useState(0)
     const menuRef = useRef<HTMLDivElement>(null)
@@ -25,16 +29,18 @@ export default function NotificationMenu() {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
 
-        const { data } = await supabase
-            .from('notifications')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false })
-            .limit(10)
-
-        if (data) {
-            setNotifications(data)
-            setUnreadCount(data.filter(n => !n.is_read).length)
+        // バックエンドAPIからリマインダーを取得
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+        try {
+            const response = await fetch(`${backendUrl}/api/reminders?user_id=${user.id}`)
+            if (response.ok) {
+                const data = await response.json()
+                setReminders(data.reminders || [])
+                // 優先度がhighまたはmediumのものを未読としてカウント
+                setUnreadCount(data.reminders.filter((r: Reminder) => r.priority === 'high' || r.priority === 'medium').length)
+            }
+        } catch (error) {
+            console.error('Failed to fetch reminders:', error)
         }
     }
 
@@ -54,23 +60,22 @@ export default function NotificationMenu() {
         }
     }, [])
 
-    // リアルタイム更新（任意実装だが今回はポーリングで代用してもOK）
-    // Supabase Realtimeを使うとより即時性が増す
-
-    const markAsRead = async (id: string) => {
-        await supabase.from('notifications').update({ is_read: true }).eq('id', id)
-        // ローカルstate更新
-        setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n))
-        setUnreadCount(prev => Math.max(0, prev - 1))
+    const getPriorityColor = (priority: string) => {
+        switch (priority) {
+            case 'high': return 'bg-red-500'
+            case 'medium': return 'bg-amber-500'
+            case 'low': return 'bg-blue-500'
+            default: return 'bg-gray-500'
+        }
     }
 
-    const markAllAsRead = async () => {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
-
-        await supabase.from('notifications').update({ is_read: true }).eq('user_id', user.id).eq('is_read', false)
-        setNotifications(prev => prev.map(n => ({ ...n, is_read: true })))
-        setUnreadCount(0)
+    const getPriorityLabel = (priority: string) => {
+        switch (priority) {
+            case 'high': return '緊急'
+            case 'medium': return '重要'
+            case 'low': return '確認'
+            default: return ''
+        }
     }
 
     return (
@@ -88,44 +93,52 @@ export default function NotificationMenu() {
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden animation-fade-in">
                     <div className="p-3 border-b border-gray-100 dark:border-white/10 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50">
-                        <h3 className="font-bold text-sm text-gray-700 dark:text-gray-200">通知</h3>
+                        <h3 className="font-bold text-sm text-gray-700 dark:text-gray-200">リマインダー</h3>
                         {unreadCount > 0 && (
-                            <button
-                                onClick={markAllAsRead}
-                                className="text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 font-medium flex items-center gap-1"
-                            >
-                                <Check className="w-3 h-3" />
-                                すべて既読
-                            </button>
+                            <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                {unreadCount}件
+                            </span>
                         )}
                     </div>
 
                     <div className="max-h-96 overflow-y-auto">
-                        {notifications.length > 0 ? (
+                        {reminders.length > 0 ? (
                             <ul className="divide-y divide-gray-100 dark:divide-white/5">
-                                {notifications.map(notification => (
-                                    <li key={notification.id} className={`p-4 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors ${notification.is_read ? 'opacity-60' : 'bg-indigo-50/30 dark:bg-indigo-900/10'}`}>
+                                {reminders.map(reminder => (
+                                    <li key={reminder.id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
                                         <div className="flex gap-3 items-start">
-                                            <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${notification.is_read ? 'bg-gray-300 dark:bg-slate-600' : 'bg-indigo-500'}`}></div>
+                                            <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${getPriorityColor(reminder.priority)}`}></div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">{notification.title}</p>
-                                                <p className="text-xs text-gray-500 dark:text-slate-400 mb-2 line-clamp-2">{notification.content}</p>
-                                                <div className="flex justify-between items-center">
-                                                    <span className="text-[10px] text-gray-400 font-mono">
-                                                        {new Date(notification.created_at).toLocaleDateString()} {new Date(notification.created_at).getHours()}:{new Date(notification.created_at).getMinutes().toString().padStart(2, '0')}
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                                                        reminder.priority === 'high' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
+                                                        reminder.priority === 'medium' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
+                                                        'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                                                    }`}>
+                                                        {getPriorityLabel(reminder.priority)}
                                                     </span>
-                                                    {notification.link && (
-                                                        <Link
-                                                            href={notification.link}
-                                                            onClick={() => {
-                                                                if (!notification.is_read) markAsRead(notification.id)
-                                                                setIsOpen(false)
-                                                            }}
-                                                            className="text-xs text-indigo-600 hover:underline dark:text-indigo-400"
-                                                        >
-                                                            詳細を見る
-                                                        </Link>
+                                                </div>
+                                                <p className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">{reminder.company_name}</p>
+                                                <p className="text-xs text-gray-600 dark:text-slate-400 mb-2">{reminder.message}</p>
+                                                <div className="flex justify-between items-center">
+                                                    {reminder.days_remaining !== undefined && (
+                                                        <span className="text-[10px] text-red-500 dark:text-red-400 font-bold flex items-center gap-1">
+                                                            <Clock className="w-3 h-3" />
+                                                            残り{reminder.days_remaining}日
+                                                        </span>
                                                     )}
+                                                    {reminder.days_passed !== undefined && (
+                                                        <span className="text-[10px] text-gray-400 font-mono">
+                                                            {reminder.days_passed}日経過
+                                                        </span>
+                                                    )}
+                                                    <Link
+                                                        href={`/companies/${reminder.company_id}`}
+                                                        onClick={() => setIsOpen(false)}
+                                                        className="text-xs text-indigo-600 hover:underline dark:text-indigo-400"
+                                                    >
+                                                        詳細を見る
+                                                    </Link>
                                                 </div>
                                             </div>
                                         </div>
@@ -135,7 +148,7 @@ export default function NotificationMenu() {
                         ) : (
                             <div className="p-8 text-center text-gray-400 dark:text-slate-500">
                                 <Bell className="w-8 h-8 mx-auto mb-2 opacity-20" />
-                                <p className="text-sm">通知はありません</p>
+                                <p className="text-sm">リマインダーはありません</p>
                             </div>
                         )}
                     </div>

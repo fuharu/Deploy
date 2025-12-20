@@ -1,58 +1,62 @@
 """
 リマインダー API ルート
 """
-from fastapi import APIRouter, HTTPException, Depends
-from typing import List
-from datetime import datetime, timedelta
-from ..models.reminder import Reminder, ReminderResponse, ReminderType
+from fastapi import APIRouter, HTTPException, Query
+from typing import Dict, Any
+from uuid import UUID
 from ..services.reminder_service import ReminderService
 from ..database import supabase
 
 router = APIRouter(prefix="/api/reminders", tags=["reminders"])
 
-@router.get("/email-check/{company_id}")
-async def get_email_check_reminder(company_id: int, user_id: str = "test-user"):
+@router.get("")
+async def get_all_reminders(
+    user_id: UUID = Query(..., description="ユーザーID")
+) -> Dict[str, Any]:
     """
-    特定の企業のメールを確認すべきかチェック
-    7日間アクティビティがない場合にリマインダーを返す
-    """
-    service = ReminderService(supabase)
-    reminder = await service.check_email_reminder(company_id, user_id)
-    if reminder:
-        return {"should_check": True, "message": reminder.message}
-    return {"should_check": False, "message": "No reminder needed"}
+    ユーザーの全リマインドを取得（優先度順）
 
-@router.get("/application")
-async def get_application_reminders(user_id: str = "test-user"):
-    """
-    締切が近づいている企業のリマインダーを取得
+    Returns:
+        {
+            "reminders": [
+                {
+                    "id": "uuid",
+                    "type": "email_check" | "deadline_not_applied" | "deadline_applied",
+                    "company_id": "uuid",
+                    "company_name": "企業名",
+                    "message": "リマインドメッセージ",
+                    "priority": "high" | "medium" | "low",
+                    "days_remaining": 2,  // 締切系のみ
+                    "created_at": "ISO8601形式の日時"
+                }
+            ],
+            "total_count": 5
+        }
     """
     service = ReminderService(supabase)
-    reminders = await service.get_application_reminders(user_id)
-    return ReminderResponse(
-        reminders=reminders,
-        unread_count=len([r for r in reminders if not r.is_read])
-    )
+    return await service.get_all_reminders(user_id)
 
-@router.get("/all")
-async def get_all_reminders(user_id: str = "test-user"):
+@router.get("/email-check")
+async def get_email_check_reminders(
+    user_id: UUID = Query(..., description="ユーザーID")
+) -> Dict[str, Any]:
     """
-    ユーザーの全アクティブなリマインダーを取得
-    """
-    service = ReminderService(supabase)
-    reminders = await service.get_all_reminders(user_id)
-    return ReminderResponse(
-        reminders=reminders,
-        unread_count=len([r for r in reminders if not r.is_read])
-    )
+    メール確認リマインドのみ取得
 
-@router.put("/{reminder_id}/read")
-async def mark_reminder_read(reminder_id: int, user_id: str = "test-user"):
-    """
-    リマインダーを既読にする
+    ES提出済み/面接中で7日以上更新がない企業が対象
     """
     service = ReminderService(supabase)
-    success = await service.mark_as_read(reminder_id, user_id)
-    if success:
-        return {"message": "Reminder marked as read"}
-    raise HTTPException(status_code=404, detail="Reminder not found")
+    return await service.get_email_check_reminders(user_id)
+
+@router.get("/deadlines")
+async def get_deadline_reminders(
+    user_id: UUID = Query(..., description="ユーザーID")
+) -> Dict[str, Any]:
+    """
+    締切リマインドのみ取得（優先度順）
+
+    1-3日後の締切イベントが対象
+    未応募の場合は「応募しましたか？」メッセージ付き
+    """
+    service = ReminderService(supabase)
+    return await service.get_deadline_reminders(user_id)

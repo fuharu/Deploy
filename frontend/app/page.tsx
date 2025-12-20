@@ -62,6 +62,7 @@ export default async function Home() {
     .order("due_date", { ascending: true })
     .limit(5);
 
+
   // 企業ステータスの集計
   const { data: selections } = await supabase
     .from("usercompanyselections")
@@ -192,25 +193,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* リマインダーアラート */}
-      {urgentEvents.length > 0 && (
-        <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm animate-pulse-slow">
-          <div className="flex items-start">
-            <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" />
-            <div className="ml-3">
-              <h3 className="text-sm font-bold text-red-800 dark:text-red-300">直近の予定 ({urgentEvents.length}件)</h3>
-              <ul className="mt-1 space-y-1">
-                 {urgentEvents.map(e => (
-                   <li key={e.id} className="text-sm text-red-700 dark:text-red-200">
-                      <span className="font-mono font-bold mr-2">{new Date(e.start_time).getHours()}:{new Date(e.start_time).getMinutes().toString().padStart(2, '0')}</span>
-                      {e.title}
-                   </li>
-                 ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* 左カラム */}

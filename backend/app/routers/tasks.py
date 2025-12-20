@@ -4,7 +4,8 @@ Todo/タスク管理 API ルート
 """
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
-from ..models.task import Task, TaskCreate, TaskUpdate
+from uuid import UUID
+from ..models.models import Task, TaskCreate
 from ..database import supabase
 
 router = APIRouter(prefix="/api/tasks", tags=["tasks"])
@@ -12,7 +13,7 @@ router = APIRouter(prefix="/api/tasks", tags=["tasks"])
 @router.get("/", response_model=List[Task])
 async def get_tasks(
     user_id: str = "test-user",
-    company_id: Optional[int] = None,
+    company_id: Optional[UUID] = None,
     is_completed: Optional[bool] = None
 ):
     """
@@ -51,7 +52,7 @@ async def create_task(task: TaskCreate, user_id: str = "test-user"):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/{task_id}", response_model=Task)
-async def update_task(task_id: int, task: TaskUpdate, user_id: str = "test-user"):
+async def update_task(task_id: UUID, task: TaskCreate, user_id: str = "test-user"):
     """
     タスクを更新
     """
@@ -68,7 +69,7 @@ async def update_task(task_id: int, task: TaskUpdate, user_id: str = "test-user"
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/{task_id}")
-async def delete_task(task_id: int, user_id: str = "test-user"):
+async def delete_task(task_id: UUID, user_id: str = "test-user"):
     """
     タスクを削除
     """
@@ -82,7 +83,7 @@ async def delete_task(task_id: int, user_id: str = "test-user"):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/{task_id}/complete")
-async def toggle_task_completion(task_id: int, user_id: str = "test-user"):
+async def toggle_task_completion(task_id: UUID, user_id: str = "test-user"):
     """
     タスクの完了状態を切り替え
     """

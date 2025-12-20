@@ -2,7 +2,9 @@
 
 import { useState, useRef } from 'react'
 import { addEvent, deleteEvent } from '@/app/companies/[id]/event_actions'
-import { Calendar, Clock, MapPin, Trash2 } from 'lucide-react'
+import { getReflectionByEventId } from '@/app/companies/[id]/reflection_actions'
+import { Calendar, Clock, MapPin, Trash2, MessageSquare } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 type Event = {
   id: string
@@ -95,16 +97,22 @@ export default function EventList({
 }
 
 function EventItem({ event, companyId }: { event: Event, companyId: string }) {
+  const router = useRouter()
   const startDate = new Date(event.start_time)
   const endDate = new Date(event.end_time)
 
   // 日付フォーマット: MM/DD HH:mm
   const format = (d: Date) => `${d.getMonth() + 1}/${d.getDate()} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
 
+  const handleReflectionClick = () => {
+    // 振り返りログタブに遷移（eventIdパラメータ付き）
+    window.location.href = `/companies/${companyId}?tab=reflections&eventId=${event.id}`
+  }
+
   return (
     <div className="border-l-4 border-indigo-500 dark:border-indigo-400 bg-white dark:bg-gray-800 p-3 rounded shadow-sm hover:shadow transition group">
       <div className="flex justify-between items-start">
-        <div>
+        <div className="flex-1">
           <div className="font-bold text-sm mb-1 dark:text-white">{event.title} <span className="text-xs font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-1 rounded ml-1">{event.type}</span></div>
           <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
             <Clock className="w-3 h-3" /> {format(startDate)} ~ {format(endDate)}
@@ -115,13 +123,25 @@ function EventItem({ event, companyId }: { event: Event, companyId: string }) {
             </div>
           )}
         </div>
-        <form action={deleteEvent} className="opacity-0 group-hover:opacity-100 transition">
-          <input type="hidden" name="id" value={event.id} />
-          <input type="hidden" name="company_id" value={companyId} />
-          <button className="text-gray-400 hover:text-red-600 text-xs p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition">
-            <Trash2 className="w-4 h-4" />
+        <div className="flex items-center gap-1">
+          {/* 振り返りボタン（常に表示） */}
+          <button
+            onClick={handleReflectionClick}
+            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 text-xs p-1 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition flex items-center gap-1"
+            title="振り返りを書く"
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span className="text-xs font-medium">振り返り</span>
           </button>
-        </form>
+          {/* 削除ボタン（ホバー時のみ表示） */}
+          <form action={deleteEvent} className="opacity-0 group-hover:opacity-100 transition">
+            <input type="hidden" name="id" value={event.id} />
+            <input type="hidden" name="company_id" value={companyId} />
+            <button className="text-gray-400 hover:text-red-600 text-xs p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition">
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   )

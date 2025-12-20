@@ -1,18 +1,22 @@
 'use client'
 
+'use client'
+
 import { useState, useRef } from 'react'
-import { addEvent, deleteEvent } from '@/app/companies/[id]/event_actions'
-import { getReflectionByEventId } from '@/app/companies/[id]/reflection_actions'
-import { Calendar, Clock, MapPin, Trash2, MessageSquare } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { addEvent, deleteEvent } from '@/app/companies/[id]/event_actions'
+import { Calendar, Clock, MapPin, Trash2 } from 'lucide-react'
+import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
+import { useToast } from '@/components/providers/ToastProvider'
 
 type Event = {
   id: string
   title: string
-  type: 'Interview' | 'Deadline' | 'Seminar' | 'Other'
+  type: 'Interview' | 'Seminar' | 'Other'
   start_time: string
-  end_time: string
+  end_time: string | null
   location: string | null
+  description: string | null
 }
 
 export default function EventList({
@@ -23,16 +27,48 @@ export default function EventList({
   initialEvents: Event[]
 }) {
   const formRef = useRef<HTMLFormElement>(null)
+  const [events, setEvents] = useState<Event[]>(initialEvents)
+  const router = useRouter()
+  const { showSuccess, showError } = useToast()
+
+  const handleAddEvent = async (formData: FormData) => {
+    const title = formData.get('title') as string
+    const type = formData.get('type') as Event['type']
+    const start_time = formData.get('start_time') as string
+    const end_time = formData.get('end_time') as string
+    const description = formData.get('description') as string || null
+
+    // オプティミスティック更新
+    const tempId = `temp-${Date.now()}`
+    const newEvent: Event = {
+      id: tempId,
+      title,
+      type,
+      start_time,
+      end_time,
+      location: null,
+      description,
+    }
+    setEvents((prev) => [...prev, newEvent])
+    formRef.current?.reset()
+
+    try {
+      await addEvent(formData)
+      showSuccess('イベントを追加しました')
+      router.refresh()
+    } catch (error) {
+      // ロールバック
+      setEvents((prev) => prev.filter((e) => e.id !== tempId))
+      showError('イベントの追加に失敗しました')
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4">
       {/* 常時表示の簡易追加フォーム */}
       <form
         ref={formRef}
-        action={async (formData) => {
-          await addEvent(formData)
-          formRef.current?.reset()
-        }}
+        action={handleAddEvent}
         className="flex flex-col gap-3 bg-gray-50 dark:bg-gray-700/30 p-3 rounded-lg border dark:border-gray-700"
       >
         <input type="hidden" name="company_id" value={companyId} />
@@ -69,6 +105,12 @@ export default function EventList({
               className="border dark:border-gray-600 rounded px-2 py-2 text-sm flex-1 dark:bg-gray-700 dark:text-white min-w-0"
             />
           </div>
+          <textarea
+            name="description"
+            placeholder="説明 (任意)"
+            rows={2}
+            className="border dark:border-gray-600 rounded px-2 py-2 text-sm dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 resize-y"
+          />
         </div>
 
         <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm font-medium w-full transition mt-1">
@@ -77,11 +119,11 @@ export default function EventList({
       </form>
 
       <div className="flex flex-col gap-3">
-        {initialEvents.map((event) => (
-          <EventItem key={event.id} event={event} companyId={companyId} />
+        {events.map((event) => (
+          <EventItem key={event.id} event={event} companyId={companyId} setEvents={setEvents} />
         ))}
 
-        {initialEvents.length === 0 && (
+        {events.length === 0 && (
           <div className="text-center py-8 bg-gray-50 dark:bg-gray-900/50 rounded border border-dashed border-gray-200 dark:border-gray-700">
             <div className="flex justify-center mb-2">
               <Calendar className="w-8 h-8 text-gray-300 dark:text-gray-600" />
@@ -96,54 +138,82 @@ export default function EventList({
   )
 }
 
-function EventItem({ event, companyId }: { event: Event, companyId: string }) {
+function EventItem({ event, companyId, setEvents }: { event: Event, companyId: string, setEvents: React.Dispatch<React.SetStateAction<Event[]>> }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter()
+  const { showSuccess, showError } = useToast()
   const startDate = new Date(event.start_time)
-  const endDate = new Date(event.end_time)
+  const endDate = event.end_time ? new Date(event.end_time) : null
 
   // 日付フォーマット: MM/DD HH:mm
   const format = (d: Date) => `${d.getMonth() + 1}/${d.getDate()} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
 
-  const handleReflectionClick = () => {
-    // 振り返りログタブに遷移（eventIdパラメータ付き）
-    window.location.href = `/companies/${companyId}?tab=reflections&eventId=${event.id}`
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    const eventId = event.id
+
+    // オプティミスティック更新
+    setEvents((prev) => prev.filter((e) => e.id !== eventId))
+
+    try {
+      const formData = new FormData()
+      formData.append('id', event.id)
+      formData.append('company_id', companyId)
+      await deleteEvent(formData)
+      showSuccess('イベントを削除しました')
+      router.refresh()
+    } catch (error) {
+      // ロールバック
+      setEvents((prev) => [...prev, event])
+      showError('削除に失敗しました')
+      console.error('Delete error:', error)
+    } finally {
+      setIsDeleting(false)
+      setIsOpen(false)
+    }
   }
 
   return (
-    <div className="border-l-4 border-indigo-500 dark:border-indigo-400 bg-white dark:bg-gray-800 p-3 rounded shadow-sm hover:shadow transition group">
-      <div className="flex justify-between items-start">
-        <div className="flex-1">
-          <div className="font-bold text-sm mb-1 dark:text-white">{event.title} <span className="text-xs font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-1 rounded ml-1">{event.type}</span></div>
-          <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
-            <Clock className="w-3 h-3" /> {format(startDate)} ~ {format(endDate)}
-          </div>
-          {event.location && (
-            <div className="text-xs text-indigo-500 dark:text-indigo-400 mt-1 truncate max-w-[200px] flex items-center gap-1">
-              <MapPin className="w-3 h-3" /> {event.location}
+    <>
+      <div className="border-l-4 border-indigo-500 dark:border-indigo-400 bg-white dark:bg-gray-800 p-3 rounded shadow-sm hover:shadow transition group">
+        <div className="flex justify-between items-start">
+          <div>
+            <div className="font-bold text-sm mb-1 dark:text-white">{event.title} <span className="text-xs font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-1 rounded ml-1">{event.type}</span></div>
+            <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
+              <Clock className="w-3 h-3" /> {format(startDate)}{endDate ? ` ~ ${format(endDate)}` : ''}
             </div>
-          )}
-        </div>
-        <div className="flex items-center gap-1">
-          {/* 振り返りボタン（常に表示） */}
+            {event.location && (
+              <div className="text-xs text-indigo-500 dark:text-indigo-400 mt-1 truncate max-w-[200px] flex items-center gap-1">
+                <MapPin className="w-3 h-3" /> {event.location}
+              </div>
+            )}
+            {event.description && (
+              <div className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
+                {event.description}
+              </div>
+            )}
+          </div>
           <button
-            onClick={handleReflectionClick}
-            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 text-xs p-1 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition flex items-center gap-1"
-            title="振り返りを書く"
+            onClick={() => setIsOpen(true)}
+            disabled={isDeleting}
+            className="opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-red-600 text-xs p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
           >
-            <MessageSquare className="w-4 h-4" />
-            <span className="text-xs font-medium">振り返り</span>
+            <Trash2 className="w-4 h-4" />
           </button>
-          {/* 削除ボタン（ホバー時のみ表示） */}
-          <form action={deleteEvent} className="opacity-0 group-hover:opacity-100 transition">
-            <input type="hidden" name="id" value={event.id} />
-            <input type="hidden" name="company_id" value={companyId} />
-            <button className="text-gray-400 hover:text-red-600 text-xs p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </form>
         </div>
       </div>
-    </div>
+      <ConfirmDialog
+        isOpen={isOpen}
+        title="イベントを削除しますか？"
+        message={`「${event.title}」を削除します。この操作は取り消せません。`}
+        confirmText="削除する"
+        cancelText="キャンセル"
+        onConfirm={handleDelete}
+        onCancel={() => setIsOpen(false)}
+        variant="danger"
+      />
+    </>
   )
 }
 

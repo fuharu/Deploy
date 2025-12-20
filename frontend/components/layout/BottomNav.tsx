@@ -15,8 +15,8 @@ export default function BottomNav() {
   const navItems = [
     { href: '/', label: 'ホーム', icon: Home },
     { href: '/companies', label: '企業', icon: Building2 },
+    { href: '/calendar', label: 'カレンダー', icon: Calendar },
     { href: '/companies/new', label: '追加', icon: PlusCircle },
-    // 将来的にはカレンダー専用ページなどがあれば追加
   ]
 
   return (

@@ -84,20 +84,23 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
 
             <div className="flex flex-wrap gap-3 items-center mt-4">
               <span className={`px-3 py-1 rounded-full text-sm font-bold border ${company.status === 'Interested' ? 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800' :
-                  company.status === 'Entry' ? 'bg-indigo-50 text-indigo-600 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-800' :
-                    company.status === 'ES_Submit' ? 'bg-violet-100 text-violet-800 border-violet-300 dark:bg-violet-800/40 dark:text-violet-200 dark:border-violet-700' :
-                      company.status === 'Interview' ? 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800' :
-                        company.status === 'Offer' ? 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800' :
-                          'bg-gray-100 text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700'
+                company.status === 'Entry' ? 'bg-indigo-50 text-indigo-600 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-800' :
+                  company.status === 'ES_Submit' ? 'bg-violet-100 text-violet-800 border-violet-300 dark:bg-violet-800/40 dark:text-violet-200 dark:border-violet-700' :
+                    company.status === 'Interview' ? 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800' :
+                      company.status === 'Offer' ? 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800' :
+                        'bg-gray-100 text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700'
                 }`}>
-                {{
-                  Interested: '気になる',
-                  Entry: 'エントリー',
-                  ES_Submit: 'ES提出済',
-                  Interview: '面接選考中',
-                  Offer: '内定',
-                  Rejected: 'お見送り',
-                }[company.status] || company.status}
+                {(() => {
+                  const statusLabels: Record<string, string> = {
+                    Interested: '気になる',
+                    Entry: 'エントリー',
+                    ES_Submit: 'ES提出済',
+                    Interview: '面接選考中',
+                    Offer: '内定',
+                    Rejected: 'お見送り',
+                  }
+                  return statusLabels[company.status as string] || company.status
+                })()}
               </span>
               <span className="text-gray-600 dark:text-gray-400 text-sm flex items-center gap-1">
                 志望度: <span className="text-yellow-500">{'★'.repeat(company.motivation_level)}</span>{'☆'.repeat(5 - company.motivation_level)}

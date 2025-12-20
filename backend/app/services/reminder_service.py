@@ -26,6 +26,31 @@ class ReminderService:
         """
         メール確認リマインドを生成
         ES提出済み/面接中で7日以上更新がない企業が対象
+
+        Args:
+            user_id (UUID): ユーザーID
+
+        Returns:
+            List[Dict[str, Any]]: メール確認リマインダーのリスト
+                [
+                    {
+                        "id": str,  # リマインダーID (UUID)
+                        "type": str,  # "email_check"
+                        "company_id": str,  # 企業ID (UUID)
+                        "company_name": str,  # 企業名
+                        "message": str,  # "○○社からメールが届いていませんか？最終更新から10日経過しています"
+                        "priority": str,  # "low"
+                        "days_passed": int,  # 最終更新からの経過日数
+                        "created_at": str  # リマインダー作成日時 (ISO8601形式)
+                    },
+                    ...
+                ]
+
+        Notes:
+            - 7日以上更新がない企業が対象
+            - ステータスが "ES_Submit" または "Interview" の企業のみ
+            - 今後7日以内にイベントがある企業は除外される
+            - エラー発生時は空リストを返す
         """
         if not self.supabase:
             return []
@@ -95,6 +120,40 @@ class ReminderService:
         """
         締切リマインドを生成
         1-3日後の締切イベントが対象
+
+        Args:
+            user_id (UUID): ユーザーID
+
+        Returns:
+            List[Dict[str, Any]]: 締切リマインダーのリスト
+                [
+                    {
+                        "id": str,  # リマインダーID (UUID)
+                        "type": str,  # "deadline_not_applied" または "deadline_applied"
+                        "company_id": str,  # 企業ID (UUID)
+                        "company_name": str,  # 企業名
+                        "message": str,  # "○○社の締切まであと2日です。応募しましたか？" など
+                        "priority": str,  # "high" または "medium"
+                        "days_remaining": int,  # 締切までの残り日数
+                        "deadline": str,  # 締切日時 (ISO8601形式)
+                        "created_at": str  # リマインダー作成日時 (ISO8601形式)
+                    },
+                    ...
+                ]
+
+        Notes:
+            - 1-3日後の締切イベント（type="Deadline"）が対象
+            - 未応募（status="Interested"）の場合:
+                - メッセージ: "締切まであと○日です。応募しましたか？"
+                - 優先度: 残り1日以下なら HIGH、それ以外は MEDIUM
+            - 応募済みの場合:
+                - メッセージ: "締切まであと○日です"
+                - 優先度: MEDIUM
+            - 残り時間の表現:
+                - 0日: "○時間"
+                - 1日+時間あり: "1日と○時間"
+                - それ以外: "○日"
+            - エラー発生時は空リストを返す
         """
         if not self.supabase:
             return []
@@ -131,7 +190,11 @@ class ReminderService:
                         "user_id", str(user_id)
                     ).eq(
                         "company_id", company_id
-                    ).single().execute()
+                    ).execute()
+
+                    # 選考状況が見つからない場合はスキップ
+                    if not selection_response.data:
+                        continue
 
                     # 締切までの残り日数を計算
                     deadline = datetime.fromisoformat(
@@ -150,7 +213,7 @@ class ReminderService:
                         time_str = f"{days_remaining}日"
 
                     # ステータスに応じてメッセージと優先度を設定
-                    if selection_response.data and selection_response.data.get("status") == "Interested":
+                    if selection_response.data[0].get("status") == "Interested":
                         # 未応募の場合
                         message = f"{company['name']}の締切まであと{time_str}です。応募しましたか？"
                         reminder_type = ReminderType.DEADLINE_NOT_APPLIED

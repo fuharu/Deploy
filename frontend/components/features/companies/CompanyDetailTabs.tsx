@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
-import { Calendar, CheckSquare, FileText, Coffee } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Calendar, CheckSquare, FileText, Coffee, MessageSquare } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import EventList from './EventList'
 import TodoList from './TodoList'
 import EsList from './EsList'
+import ReflectionList from './ReflectionList'
 import CafeSearch from '@/components/features/cafe/CafeSearch'
 
 type Props = {
@@ -17,10 +19,19 @@ type Props = {
 }
 
 export default function CompanyDetailTabs({ companyId, events, tasks, esList, defaultLocation }: Props) {
-  const [activeTab, setActiveTab] = useState('events')
+  const searchParams = useSearchParams()
+  const tabParam = searchParams.get('tab')
+  const [activeTab, setActiveTab] = useState(tabParam || 'events')
+
+  useEffect(() => {
+    if (tabParam) {
+      setActiveTab(tabParam)
+    }
+  }, [tabParam])
 
   const tabs = [
     { id: 'events', label: 'イベント・日程', icon: Calendar, color: 'text-indigo-500' },
+    { id: 'reflections', label: '振り返りログ', icon: MessageSquare, color: 'text-blue-500' },
     { id: 'tasks', label: 'タスク (Todo)', icon: CheckSquare, color: 'text-emerald-500' },
     { id: 'es', label: 'ES・提出書類', icon: FileText, color: 'text-violet-500' },
     { id: 'cafe', label: '周辺カフェ', icon: Coffee, color: 'text-orange-500' },
@@ -63,6 +74,11 @@ export default function CompanyDetailTabs({ companyId, events, tasks, esList, de
                 {activeTab === 'events' && (
                 <div className="max-w-3xl mx-auto">
                     <EventList companyId={companyId} initialEvents={events} />
+                </div>
+                )}
+                {activeTab === 'reflections' && (
+                <div className="max-w-3xl mx-auto">
+                    <ReflectionList events={events} />
                 </div>
                 )}
                 {activeTab === 'tasks' && (

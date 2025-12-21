@@ -12,19 +12,27 @@ CREATE TABLE Users (
 -- ---------------------------------
 -- 2. Companies テーブル
 -- ---------------------------------
-CREATE TABLE Companies (
+CREATE TABLE companies (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL UNIQUE, -- unique制約
     url VARCHAR(255),
     address VARCHAR(255),
-    industry VARCHAR(255),
+    industry_id int8, -- 外部キー
     updated_at TIMESTAMP WITH TIME ZONE
+);
+
+-- ---------------------------------    
+-- 2-1. Industries テーブル (業界マスター)
+-- ---------------------------------
+CREATE TABLE industries (
+    id int8 PRIMARY KEY,
+    industries text NOT NULL
 );
 
 -- ---------------------------------
 -- 3. UserCompanySelections テーブル
 -- ---------------------------------
-CREATE TABLE UserCompanySelections (
+CREATE TABLE usercompanyselections (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id UUID NOT NULL REFERENCES Companies(id), -- 外部キー
     user_id UUID NOT NULL REFERENCES Users(id),       -- 外部キー
@@ -45,7 +53,7 @@ CREATE TABLE UserCompanySelections (
 -- ---------------------------------
 -- 4. Events テーブル
 -- ---------------------------------
-CREATE TABLE Events (
+CREATE TABLE events (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id UUID REFERENCES Companies(id), -- 外部キー (NULL可)
     title VARCHAR(255) NOT NULL,
@@ -59,7 +67,7 @@ CREATE TABLE Events (
 -- ---------------------------------
 -- 5. UserEvents テーブル (中間テーブル)
 -- ---------------------------------
-CREATE TABLE UserEvents (
+CREATE TABLE userEvents (
     event_id UUID NOT NULL REFERENCES Events(id),
     user_id UUID NOT NULL REFERENCES Users(id),
     

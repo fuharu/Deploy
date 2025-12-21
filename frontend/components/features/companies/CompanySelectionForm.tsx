@@ -230,7 +230,7 @@ export function CompanySelectionForm({ registeredCompanyIds }: CompanySelectionF
             <div className="text-sm text-gray-500 dark:text-gray-400">読み込み中...</div>
           )}
         </div>
-        <div className="max-h-96 overflow-y-auto">
+        <div>
           {isLoading ? (
             <div className="p-8 text-center text-gray-500 dark:text-gray-400">
               読み込み中...
@@ -252,18 +252,26 @@ export function CompanySelectionForm({ registeredCompanyIds }: CompanySelectionF
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3 flex-1">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold ${selectedCompanyId === company.id
+                      <div className={`w-10 h-10 text-[12px] p-2 rounded-lg flex items-center justify-center text-lg font-bold ${selectedCompanyId === company.id
                         ? 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
                         }`}>
-                        {company.name.charAt(0)}
+                        no image
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="font-bold text-gray-900 dark:text-white">{company.name}</div>
                         {company.url && (
-                          <div className="text-xs text-gray-500 dark:text-gray-400 truncate flex items-center gap-1 mt-1">
+                          <Link href={company.url}>
+                            <div className="hover:border-b-1 mb-1 w-fit hover:border-blue-500 hover:transition-all hover:duration-300 text-xs text-gray-500 dark:text-gray-400 truncate flex items-center gap-1 mt-1">
+                              <ExternalLink className="w-3 h-3" />
+                              {new URL(company.url).hostname}
+                            </div>
+                          </Link>
+                        )}
+                        {!company.url && (
+                          <div className="mb-1 text-xs text-gray-500 dark:text-gray-400 truncate flex items-center gap-1 mt-1">
                             <ExternalLink className="w-3 h-3" />
-                            {new URL(company.url).hostname}
+                            no Link
                           </div>
                         )}
                       </div>

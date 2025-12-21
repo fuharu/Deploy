@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # エンドポイントのインポート
 from .routers import reminders  # リマインダー機能
 from .routers import reflections  # 振り返りログ機能
+from .routers import gmail  # Gmail連携機能
 # from .routers import (
 #     search, # 検索機能
 #     companies, # 企業管理
@@ -61,6 +62,8 @@ async def startup_event():
 app.include_router(reminders.router)
 # 振り返りログ機能
 app.include_router(reflections.router)
+# Gmail連携機能
+app.include_router(gmail.router)
 
 # # はやと担当
 # # 企業管理、イベント/カレンダー、ES管理

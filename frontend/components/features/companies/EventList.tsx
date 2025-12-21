@@ -1,11 +1,9 @@
 'use client'
 
-'use client'
-
 import { useState, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { addEvent, deleteEvent } from '@/app/companies/[id]/event_actions'
-import { Calendar, Clock, MapPin, Trash2 } from 'lucide-react'
+import { Calendar, Clock, MapPin, Trash2, CheckSquare } from 'lucide-react'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { useToast } from '@/components/providers/ToastProvider'
 
@@ -142,6 +140,7 @@ function EventItem({ event, companyId, setEvents }: { event: Event, companyId: s
   const [isOpen, setIsOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
   const { showSuccess, showError } = useToast()
   const startDate = new Date(event.start_time)
   const endDate = event.end_time ? new Date(event.end_time) : null
@@ -174,11 +173,16 @@ function EventItem({ event, companyId, setEvents }: { event: Event, companyId: s
     }
   }
 
+  const handleReflectionClick = () => {
+    // 振り返りログタブに遷移し、このイベントの振り返りフォームを表示
+    router.push(`${pathname}?tab=reflections&eventId=${event.id}`)
+  }
+
   return (
     <>
       <div className="border-l-4 border-indigo-500 dark:border-indigo-400 bg-white dark:bg-gray-800 p-3 rounded shadow-sm hover:shadow transition group">
         <div className="flex justify-between items-start">
-          <div>
+          <div className="flex-1">
             <div className="font-bold text-sm mb-1 dark:text-white">{event.title} <span className="text-xs font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-1 rounded ml-1">{event.type}</span></div>
             <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
               <Clock className="w-3 h-3" /> {format(startDate)}{endDate ? ` ~ ${format(endDate)}` : ''}
@@ -194,13 +198,22 @@ function EventItem({ event, companyId, setEvents }: { event: Event, companyId: s
               </div>
             )}
           </div>
-          <button
-            onClick={() => setIsOpen(true)}
-            disabled={isDeleting}
-            className="opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-red-600 text-xs p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2 ml-3">
+            <button
+              onClick={handleReflectionClick}
+              className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+            >
+              <CheckSquare className="w-3.5 h-3.5" />
+              振り返り
+            </button>
+            <button
+              onClick={() => setIsOpen(true)}
+              disabled={isDeleting}
+              className="opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-red-600 text-xs p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
       <ConfirmDialog

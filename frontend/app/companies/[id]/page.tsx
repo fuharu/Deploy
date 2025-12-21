@@ -68,16 +68,16 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
       <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 md:p-8 shadow-sm mb-8 transition-colors">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <div className="flex items-center gap-4 mb-2">
-              <div className="w-16 h-16 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-3xl font-bold text-gray-400 dark:text-gray-500">
-                {company.name.charAt(0)}
+            <div className="flex items-center gap-4 mb-2 ">
+              <div className="w-16 h-16 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xl p-2 font-bold text-gray-400 dark:text-gray-500">
+                no image
               </div>
               <div>
                 <h1 className="text-2xl md:text-4xl font-extrabold text-gray-900 dark:text-white">{company.name}</h1>
                 {company.url && (
-                  <a href={company.url} target="_blank" rel="noopener noreferrer" className="text-indigo-500 dark:text-indigo-400 hover:underline text-sm flex items-center gap-1 mt-1">
-                    <LinkIcon className="w-3 h-3" /> 公式サイト
-                  </a>
+                  <Link href={company.url} target="_blank" rel="noopener noreferrer" className="text-indigo-500 dark:text-indigo-400 hover:underline text-sm flex items-center gap-1 mt-1 duraion-200">
+                    <p>会社公式サイト</p>
+                  </Link>
                 )}
               </div>
             </div>

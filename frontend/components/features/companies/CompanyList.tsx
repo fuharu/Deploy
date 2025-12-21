@@ -1,5 +1,6 @@
 'use client'
 
+import { ExternalLinkIcon } from 'lucide-react'
 import Link from 'next/link'
 
 interface Company {
@@ -46,11 +47,11 @@ export function CompanyList({ companies }: CompanyListProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {companies.map((company) => (
         <Link key={company.id} href={`/companies/${company.id}`} className="block group">
-          <div className="border dark:border-gray-700 rounded-xl p-5 hover:shadow-lg transition bg-white dark:bg-gray-800 h-full flex flex-col">
+          <div className="border dark:border-gray-700 rounded-xl p-5 hover:shadow-lg hover:bg-gray-800 duration-200 transition bg-white dark:bg-gray-800 h-full flex flex-col">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-3 flex-1">
-                <div className="w-12 h-12 rounded-lg bg-gray-50 dark:bg-gray-700 border dark:border-gray-600 flex items-center justify-center text-xl font-bold text-gray-400 dark:text-gray-500 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition">
-                  {company.name.charAt(0)}
+                <div className="w-12 h-12 rounded-lg bg-gray-50 dark:bg-gray-700 p-2 text-sm border dark:border-gray-600 flex items-center justify-center font-bold text-gray-400 dark:text-gray-500">
+                  no image
                 </div>
                 <div className="flex-1 min-w-0">
                   <h2 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-1">{company.name}</h2>
@@ -64,7 +65,8 @@ export function CompanyList({ companies }: CompanyListProps) {
             <div className="mt-auto flex justify-between items-center">
               {getStatusBadge(company.status)}
               {company.url && (
-                <div className="text-xs text-gray-400 dark:text-gray-500 truncate max-w-[150px]">
+                <div className="flex items-center gap-1 hover:border-b hover:border-blue-500 mb-1 duration-200 text-xs text-gray-400 dark:text-gray-500 truncate max-w-[150px]">
+                  <ExternalLinkIcon className="w-3 h-3" />
                   {new URL(company.url).hostname}
                 </div>
               )}

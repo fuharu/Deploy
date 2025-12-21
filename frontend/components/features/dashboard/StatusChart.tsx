@@ -8,12 +8,10 @@ type StatusData = {
   color: string
 }
 
-export default function StatusChart({ data, total, goal }: { data: StatusData[], total: number, goal: number }) {
-  // ゴールに対する残りの部分を追加
-  const remaining = Math.max(0, goal - total)
+export default function StatusChart({ data, total }: { data: StatusData[], total: number }) {
   const chartData = [
     ...data,
-    { name: '未達', value: remaining, color: '#f3f4f6' } // dark mode color should be handled via CSS variable or Context, keeping simple for now
+    { name: '未達', value: total, color: '#f3f4f6' } // dark mode color should be handled via CSS variable or Context, keeping simple for now
   ]
 
   return (
@@ -42,7 +40,7 @@ export default function StatusChart({ data, total, goal }: { data: StatusData[],
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <span className="text-3xl font-bold text-gray-900 dark:text-white">{total}</span>
-          <span className="text-xs text-gray-400">/ {goal}</span>
+          <span className="text-xs text-gray-400">/ {total}</span>
       </div>
     </div>
   )

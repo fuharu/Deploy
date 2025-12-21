@@ -22,8 +22,6 @@ import {
 import WeeklyCalendar from "@/components/features/dashboard/WeeklyCalendar";
 import StatusChart from "@/components/features/dashboard/StatusChart";
 
-const GOAL_COMPANIES = 30;
-
 export default async function Home() {
   const supabase = await createClient();
 
@@ -130,7 +128,7 @@ export default async function Home() {
                 <GreetingIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
               </span>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 to-purple-600 dark:from-indigo-300 dark:to-purple-300">
-                {greeting}、就活生さん！
+                {greeting}
               </span>
             </h1>
             <p className="text-gray-600 dark:text-slate-300 text-base mb-4 leading-relaxed max-w-xl">
@@ -141,9 +139,6 @@ export default async function Home() {
 
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
               <div className="bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-gray-100 dark:border-white/10 flex items-center gap-3">
-                <div className="bg-gradient-to-br from-indigo-100 to-blue-50 dark:from-indigo-900/50 dark:to-slate-800 p-1.5 rounded-lg">
-                  <Briefcase className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                </div>
                 <div>
                   <span className="text-xs text-gray-500 dark:text-slate-400 block font-bold">エントリー</span>
                   <span className="text-lg font-bold text-gray-900 dark:text-white font-sans">{statusCounts.Entry}</span>
@@ -151,9 +146,6 @@ export default async function Home() {
                 </div>
               </div>
               <div className="bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-gray-100 dark:border-white/10 flex items-center gap-3">
-                <div className="bg-gradient-to-br from-amber-100 to-orange-50 dark:from-amber-900/50 dark:to-slate-800 p-1.5 rounded-lg">
-                  <Trophy className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                </div>
                 <div>
                   <span className="text-xs text-gray-500 dark:text-slate-400 block font-bold">内定</span>
                   <span className="text-lg font-bold text-gray-900 dark:text-white font-sans">{statusCounts.Offer}</span>
@@ -165,7 +157,7 @@ export default async function Home() {
 
           {/* 進捗グラフ (Recharts Pie Chart) */}
           <div className="flex-shrink-0 flex items-center justify-center bg-white/60 dark:bg-slate-800/40 rounded-full backdrop-blur-sm shadow-inner border border-white/50 dark:border-white/10 p-2">
-            <StatusChart data={statusChartData} total={totalCompanies} goal={GOAL_COMPANIES} />
+            <StatusChart data={statusChartData} total={totalCompanies}/>
           </div>
         </div>
       </section>

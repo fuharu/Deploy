@@ -21,6 +21,7 @@ import {
 
 import WeeklyCalendar from "@/components/features/dashboard/WeeklyCalendar";
 import StatusChart from "@/components/features/dashboard/StatusChart";
+import GmailConnection from "@/components/features/settings/GmailConnection";
 
 const GOAL_COMPANIES = 30;
 
@@ -61,10 +62,10 @@ export default async function Home() {
     .limit(5);
 
 
-  // 企業ステータスの集計
+  // 企業ステータスの集計と企業情報取得
   const { data: selections } = await supabase
     .from("usercompanyselections")
-    .select("status")
+    .select("*, companies(name)")
     .eq("user_id", user.id);
 
   const totalCompanies = selections?.length || 0;
@@ -291,6 +292,9 @@ export default async function Home() {
               )}
             </div>
           </section>
+
+          {/* Gmail連携 */}
+          <GmailConnection />
         </div>
       </div>
     </div>

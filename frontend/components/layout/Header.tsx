@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import ThemeToggle from './ThemeToggle'
 import NotificationMenu from './NotificationMenu'
+import GmailMenu from './GmailMenu'
 
 export default function Header() {
   const pathname = usePathname()
@@ -37,6 +38,7 @@ export default function Header() {
         </nav>
 
         <div className="flex gap-2 md:gap-4 items-center ml-4 shrink-0">
+           <GmailMenu />
            <NotificationMenu />
            <ThemeToggle />
            <form action="/auth/signout" method="post">

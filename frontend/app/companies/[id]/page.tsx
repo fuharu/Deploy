@@ -12,18 +12,25 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
 
   // paramsを非同期で解決する必要がある場合があるためawait
   const { id } = await params
+  console.log('Company ID from params:', id)
+
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
   // 企業情報と選択状況を取得
-  const { data: selection } = await supabase
+  const { data: selection, error } = await supabase
     .from('usercompanyselections')
     .select('*, companies!inner(*)')
     .eq('company_id', id)
     .eq('user_id', user.id)
     .single()
 
-  if (!selection) notFound()
+  console.log('Selection query result:', { selection, error, id, userId: user.id })
+
+  if (!selection) {
+    console.error('No selection found for company:', id)
+    notFound()
+  }
 
   const company = {
     ...selection.companies,
@@ -35,9 +42,8 @@ export default async function CompanyDetailPage({ params }: { params: { id: stri
   // 関連データを取得
   const { data: events } = await supabase
     .from('events')
-    .select('*, userevents!inner(user_id)')
+    .select('*')
     .eq('company_id', id)
-    .eq('userevents.user_id', user.id)
     .order('start_time', { ascending: true })
 
   const { data: tasks } = await supabase

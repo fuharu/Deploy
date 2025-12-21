@@ -175,7 +175,9 @@ function EventItem({ event, companyId, setEvents }: { event: Event, companyId: s
 
   const handleReflectionClick = () => {
     // 振り返りログタブに遷移し、このイベントの振り返りフォームを表示
-    router.push(`${pathname}?tab=reflections&eventId=${event.id}`)
+    const currentPath = pathname || `/companies/${companyId}`
+    router.push(`${currentPath}?tab=reflections&eventId=${event.id}`)
+    router.refresh() // 強制的にページを更新
   }
 
   return (
